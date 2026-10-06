@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Psiquiatría DSM-5: Estudio</title>
+<meta name="description" content="Examen de opción múltiple, casos clínicos y flashcards de psiquiatría (DSM-5, temas 10–32).">
+<style>
+:root{
+  --bg:#f6f5f2; --surface:#ffffff; --surface-2:#efede8; --text:#1f2328; --muted:#5f6670;
+  --border:#d9d6cf; --accent:#2f5d8a; --accent-ink:#ffffff; --ok:#1f7a4a; --ok-bg:#e3f3ea;
+  --bad:#b3261e; --bad-bg:#fbe6e4; --warn-bg:#fff4d6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171a; --surface:#1e2125; --surface-2:#272b30; --text:#e6e6e3; --muted:#a2a8b0;
+    --border:#363b42; --accent:#7fb0e0; --accent-ink:#10141a; --ok:#5ccf8f; --ok-bg:#16301f;
+    --bad:#ff8a80; --bad-bg:#3a1c1a; --warn-bg:#3a3218;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171a; --surface:#1e2125; --surface-2:#272b30; --text:#e6e6e3; --muted:#a2a8b0;
+  --border:#363b42; --accent:#7fb0e0; --accent-ink:#10141a; --ok:#5ccf8f; --ok-bg:#16301f;
+  --bad:#ff8a80; --bad-bg:#3a1c1a; --warn-bg:#3a3218;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+header h1{font-size:1.5rem;margin:0 0 4px}
+header p{margin:0 0 16px;color:var(--muted);font-size:.95rem}
+nav.tabs{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:20px;overflow-x:auto}
+nav.tabs button{background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);padding:10px 14px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--text);border-bottom-color:var(--accent)}
+section[hidden]{display:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+.q-head{font-weight:600;margin-bottom:10px}
+.q-num{color:var(--muted);font-weight:500;margin-right:4px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border:1px solid var(--border);border-radius:8px;margin:6px 0;cursor:pointer;background:var(--surface)}
+.opt:hover{background:var(--surface-2)}
+.opt input{margin-top:4px;flex:none}
+.opt.correct{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.card.graded-ok{border-left:5px solid var(--ok)}
+.card.graded-bad{border-left:5px solid var(--bad)}
+.why{display:none;margin-top:10px;font-size:.93rem;padding:10px;border-radius:8px;background:var(--surface-2)}
+.graded .why{display:block}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:middle}
+.tag.ok{background:var(--ok-bg);color:var(--ok)}
+.tag.bad{background:var(--bad-bg);color:var(--bad)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.btn{font:inherit;font-weight:600;padding:10px 18px;border-radius:8px;border:1px solid var(--accent);cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.secondary{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);max-width:100%}
+.score{display:none;padding:14px 16px;border-radius:10px;background:var(--warn-bg);border:1px solid var(--border);margin:10px 0 16px;font-size:1.05rem}
+.score.show{display:block}
+.score strong{font-size:1.4rem}
+.case-text{background:var(--surface-2);border-left:4px solid var(--accent);padding:14px 16px;border-radius:8px;margin-bottom:16px}
+.case-text h3{margin:0 0 8px}
+.case-text p{margin:6px 0}
+.sticky-bar{position:sticky;top:0;z-index:2;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:12px}
+.progress{color:var(--muted);font-size:.9rem}
+/* Flashcards */
+.fc-area{display:flex;flex-direction:column;align-items:center}
+.flash{width:100%;max-width:560px;height:320px;perspective:1200px;cursor:pointer;margin:6px 0 14px}
+.flash-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flash.flipped .flash-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;border:1px solid var(--border);padding:22px;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+.front{background:var(--surface)}
+.back{background:var(--surface-2);transform:rotateY(180deg);text-align:center}
+.face .lbl{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;font-weight:700}
+.front .txt{font-size:1.05rem}
+.back .name{font-size:1.5rem;font-weight:700;margin-bottom:8px}
+.back .key{color:var(--muted);font-size:.95rem}
+.fc-nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.hint{color:var(--muted);font-size:.85rem;text-align:center}
+@media (max-width:520px){.flash{height:360px}.btn{padding:10px 14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Psiquiatría DSM-5 · Estudio</h1>
+    <p>Temas 10–32: ansiedad y relacionados, espectro de la esquizofrenia, conducta alimentaria y sustancias.</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="examen">Preguntas tipo examen</button>
+    <button role="tab" aria-selected="false" data-tab="caso">Caso clínico</button>
+    <button role="tab" aria-selected="false" data-tab="flash">Flashcards</button>
+  </nav>
+
+  <!-- EXAMEN -->
+  <section id="examen">
+    <div class="sticky-bar toolbar">
+      <button class="btn" id="ex-grade">Calificación</button>
+      <button class="btn secondary" id="ex-reset">Reiniciar</button>
+      <span class="progress" id="ex-progress"></span>
+    </div>
+    <div class="score" id="ex-score"></div>
+    <div id="ex-list"></div>
+  </section>
+
+  <!-- CASO CLÍNICO -->
+  <section id="caso" hidden>
+    <div class="toolbar">
+      <label for="case-select"><strong>Caso:</strong></label>
+      <select id="case-select"></select>
+    </div>
+    <div class="case-text" id="case-text"></div>
+    <div class="sticky-bar toolbar">
+      <button class="btn" id="cs-grade">Calificación</button>
+      <button class="btn secondary" id="cs-reset">Reiniciar</button>
+      <span class="progress" id="cs-progress"></span>
+    </div>
+    <div class="score" id="cs-score"></div>
+    <div id="cs-list"></div>
+  </section>
+
+  <!-- FLASHCARDS -->
+  <section id="flash" hidden>
+    <div class="toolbar">
+      <label for="fc-filter"><strong>Bloque:</strong></label>
+      <select id="fc-filter">
+        <option value="all">Todos</option>
+        <option value="ans">Ansiedad y relacionados (10–20)</option>
+        <option value="psi">Espectro de la esquizofrenia (21–25)</option>
+        <option value="ali">Conducta alimentaria (26–28)</option>
+        <option value="sus">Sustancias (29–32)</option>
+      </select>
+      <button class="btn secondary" id="fc-shuffle">Barajar</button>
+    </div>
+    <div class="fc-area">
+      <div class="progress" id="fc-progress"></div>
+      <div class="flash" id="fc-card" tabindex="0" role="button" aria-label="Voltear tarjeta">
+        <div class="flash-inner">
+          <div class="face front"><div class="lbl">¿De qué se trata?</div><div class="txt" id="fc-front"></div></div>
+          <div class="face back"><div class="lbl">Patología</div><div class="name" id="fc-name"></div><div class="key" id="fc-key"></div></div>
+        </div>
+      </div>
+      <div class="fc-nav">
+        <button class="btn secondary" id="fc-prev">← Anterior</button>
+        <button class="btn" id="fc-flip">Voltear</button>
+        <button class="btn secondary" id="fc-next">Siguiente →</button>
+      </div>
+      <p class="hint">Toca la tarjeta para voltearla. Teclado: ← → para moverte, espacio para voltear.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ================== BANCO DE PREGUNTAS TIPO EXAMEN ================== */
+const EXAM = [
+ {q:"Una mujer tiene episodios súbitos de palpitaciones, sensación de ahogo y miedo a morir que alcanzan su pico en minutos y aparecen sin causa aparente. Desde hace dos meses evita salir por temor a otro episodio. ¿Diagnóstico más probable?",
+  o:["Trastorno de ansiedad generalizada","Trastorno de pánico","Trastorno de ansiedad social","Fobia específica"],a:1,
+  w:"Ataques inesperados y recurrentes con pico en minutos + ≥1 mes de preocupación por nuevos ataques o cambio de conducta (evitación)."},
+ {q:"¿Cuántos de los 13 síntomas se requieren para definir un ataque de pánico?",
+  o:["≥2","≥3","≥4","≥6"],a:2,w:"El DSM-5 exige ≥4 de 13 síntomas con inicio súbito y pico en minutos."},
+ {q:"En el trastorno de pánico, tras al menos un ataque debe haber preocupación persistente o cambio de conducta durante al menos:",
+  o:["1 semana","1 mes","3 meses","6 meses"],a:1,w:"Criterio B: ≥1 mes de preocupación por nuevos ataques o sus consecuencias, o conducta desadaptada."},
+ {q:"La agorafobia requiere miedo en al menos cuántas de 5 situaciones (transporte público, espacios abiertos, sitios cerrados, multitudes, estar solo fuera de casa)?",
+  o:["1","2","3","5"],a:1,w:"≥2 de 5 situaciones, por temor a no poder escapar o no recibir ayuda; típicamente ≥6 meses."},
+ {q:"Una mujer lleva ocho meses con preocupación excesiva por dinero, trabajo y la salud de sus familiares, difícil de controlar, con tensión muscular, fatiga e insomnio. ¿Diagnóstico?",
+  o:["Trastorno de pánico","Trastorno de síntomas somáticos","Trastorno obsesivo-compulsivo","Trastorno de ansiedad generalizada"],a:3,
+  w:"TAG: ≥6 meses de preocupación amplia y difícil de controlar + ≥3 de 6 síntomas (aquí tensión, fatiga, sueño)."},
+ {q:"En niños, ¿cuántos de los 6 síntomas físicos/cognitivos bastan para el TAG?",
+  o:["1","2","3","4"],a:0,w:"En adultos se piden ≥3 de 6; en niños basta 1."},
+ {q:"Un estudiante evita exponer en clase y comer en la cafetería porque teme que los demás noten que tiembla y lo juzguen. Lleva así un año. ¿Diagnóstico?",
+  o:["Fobia específica situacional","Agorafobia","Trastorno de ansiedad social (fobia social)","Trastorno de pánico"],a:2,
+  w:"El núcleo es el miedo a la evaluación negativa de otros en situaciones sociales; ≥6 meses."},
+ {q:"¿Cuál es la primera línea en fobia social según NICE (CG159)?",
+  o:["TCC grupal","Benzodiacepinas","TCC individual basada en el modelo de Clark y Wells","Antipsicóticos"],a:2,
+  w:"NICE recomienda TCC individual (Clark y Wells); la grupal no es la primera elección."},
+ {q:"Un hombre se desmaya al ver sangre o recibir inyecciones y evita los análisis desde hace años. ¿Qué tipo de fobia específica es?",
+  o:["Animal","Entorno natural","Sangre-inyección-herida","Situacional"],a:2,w:"Los 5 tipos: animal, entorno natural, sangre-inyección-herida, situacional y otra."},
+ {q:"Tratamiento de primera línea de la fobia específica:",
+  o:["ISRS","Terapia de exposición","Benzodiacepinas","Psicoanálisis"],a:1,w:"La exposición (en vivo; la realidad virtual es alternativa) es la primera línea."},
+ {q:"En el TOC, las obsesiones/compulsiones deben ocupar más de cuánto tiempo al día (o causar deterioro)?",
+  o:["30 minutos","1 hora","2 horas","4 horas"],a:1,w:"Criterio B: >1 hora al día o malestar/deterioro significativo."},
+ {q:"Un paciente con TOC está completamente convencido de que si no revisa la estufa 20 veces su casa arderá. ¿Qué especificador corresponde?",
+  o:["Con buena introspección","Con poca introspección","Con ausencia de introspección/creencias delirantes","Relacionado con tics"],a:2,
+  w:"Si está completamente convencido de que sus creencias son ciertas: introspección ausente/con creencias delirantes."},
+ {q:"Tratamiento psicoterapéutico de elección en el TOC:",
+  o:["Exposición y prevención de respuesta (EPR)","Psicoterapia interpersonal","EMDR","Hipnosis"],a:0,w:"TCC con EPR y/o ISRS; alternativas: clomipramina o potenciar con antipsicótico."},
+ {q:"Un hombre presenció un accidente grave hace 12 días. Tiene recuerdos intrusivos, pesadillas, evitación, hipervigilancia y 10 de 14 síntomas. ¿Diagnóstico?",
+  o:["Trastorno por estrés postraumático","Trastorno de adaptación","Trastorno por estrés agudo","Trastorno psicótico breve"],a:2,
+  w:"Estrés agudo: ≥9 de 14 síntomas y duración de 3 días a 1 mes. Aún no cumple el mes para TEPT."},
+ {q:"¿Qué duración distingue al TEPT del trastorno por estrés agudo?",
+  o:["Más de 1 semana","Más de 1 mes","Más de 3 meses","Más de 6 meses"],a:1,w:"Estrés agudo: 3 días–1 mes. TEPT: más de 1 mes."},
+ {q:"El especificador 'con expresión retardada' del TEPT se usa cuando los criterios completos aparecen:",
+  o:["≥1 mes después","≥3 meses después","≥6 meses después","≥1 año después"],a:2,w:"Expresión retardada: criterios completos ≥6 meses después del trauma."},
+ {q:"Según la guía VA/DoD 2023, ¿qué se recomienda en primer lugar para el TEPT?",
+  o:["Benzodiacepinas","Psicoterapia individual centrada en el trauma","Cannabis medicinal","Antipsicótico solo"],a:1,
+  w:"Exposición prolongada, procesamiento cognitivo o EMDR; se recomienda NO usar benzodiacepinas ni cannabis."},
+ {q:"¿Cuál de los siguientes NO cuenta como exposición traumática (criterio A) para TEPT?",
+  o:["Ser víctima de violencia sexual","Presenciar la muerte de otra persona","Ver noticias de un atentado en TV (sin relación laboral)","Socorrista expuesto repetidamente a restos humanos"],a:2,
+  w:"La exposición por medios o TV no cuenta, salvo que sea por trabajo."},
+ {q:"Un paciente refiere lagunas de memoria para eventos cotidianos y dice que 'otra persona' con otro nombre toma el control de su conducta. ¿Diagnóstico?",
+  o:["Amnesia disociativa","Trastorno de identidad disociativo","Trastorno de conversión","Trastorno facticio"],a:1,w:"≥2 estados de personalidad + lapsos de memoria recurrentes."},
+ {q:"El especificador 'con fuga disociativa' pertenece a:",
+  o:["Trastorno de identidad disociativo","Amnesia disociativa","Despersonalización/desrealización","TEPT"],a:1,w:"Fuga: deambular con propósito o desorientado con amnesia de la identidad; especificador de la amnesia disociativa."},
+ {q:"Una joven presenta debilidad en una pierna. La exploración no concuerda con ninguna enfermedad neurológica y no hay evidencia de fingimiento. ¿Diagnóstico?",
+  o:["Trastorno facticio","Simulación","Trastorno de conversión","Trastorno de ansiedad por enfermedad"],a:2,
+  w:"Síntoma motor/sensitivo incompatible con enfermedad neurológica reconocida, sin fingimiento."},
+ {q:"En el trastorno de conversión, el factor de estrés psicológico:",
+  o:["Es un requisito obligatorio","Ya no es requisito; se especifica con o sin estresor","Excluye el diagnóstico","Debe ocurrir en el último mes"],a:1,w:"El DSM-5 lo deja como especificador; ya no es requisito."},
+ {q:"Una enfermera se inyecta insulina a escondidas para provocarse hipoglucemias y se presenta en urgencias como enferma, sin beneficio económico. ¿Diagnóstico?",
+  o:["Simulación","Trastorno facticio","Trastorno de conversión","Trastorno de síntomas somáticos"],a:1,
+  w:"Engaño identificado sin recompensa externa obvia = facticio. Si hubiera incentivo externo sería simulación."},
+ {q:"Una madre provoca síntomas en su hijo para llevarlo repetidamente al hospital. ¿A quién se diagnostica de trastorno facticio aplicado a otro?",
+  o:["Al niño","A la madre (autora)","A ambos","A ninguno; es simulación"],a:1,w:"El diagnóstico es del autor; a la víctima se le puede diagnosticar maltrato."},
+ {q:"Paciente con dolor lumbar desde hace 9 meses, piensa constantemente que es algo grave, dedica horas a investigar y consultar, aunque los estudios son normales. ¿Diagnóstico?",
+  o:["Trastorno de ansiedad por enfermedad","Trastorno de síntomas somáticos con predominio de dolor","Trastorno de conversión","Trastorno facticio"],a:1,
+  w:"Hay síntoma físico real + respuesta excesiva (pensamientos, ansiedad, tiempo) >6 meses. En ansiedad por enfermedad los síntomas son ausentes o leves."},
+ {q:"En el trastorno de síntomas somáticos, la gravedad 'moderada' corresponde a:",
+  o:["1 criterio B","≥2 criterios B","≥2 criterios B + múltiples quejas","Cualquier síntoma de dolor"],a:1,w:"Leve: 1 criterio B; moderado: ≥2; grave: ≥2 + múltiples quejas o un síntoma muy intenso."},
+ {q:"Un hombre de 25 años tuvo delirios y alucinaciones durante tres semanas y después recuperó por completo su funcionamiento previo. ¿Diagnóstico?",
+  o:["Esquizofrenia","Trastorno esquizofreniforme","Trastorno psicótico breve","Trastorno delirante"],a:2,w:"≥1 día y <1 mes con retorno total al nivel previo."},
+ {q:"Un paciente cumple el criterio A de esquizofrenia desde hace 3 meses. ¿Qué diagnóstico corresponde?",
+  o:["Psicótico breve","Esquizofreniforme","Esquizofrenia","Delirante"],a:1,w:"Esquizofreniforme: criterio A + ≥1 mes y <6 meses."},
+ {q:"¿Cuál NO es uno de los síntomas que deben estar presentes (al menos uno) en el criterio A de esquizofrenia?",
+  o:["Delirios","Alucinaciones","Discurso desorganizado","Síntomas negativos"],a:3,w:"Se necesitan ≥2 de 5 y al menos uno debe ser delirios, alucinaciones o discurso desorganizado."},
+ {q:"Duración mínima total de la esquizofrenia:",
+  o:["1 mes","3 meses","6 meses (incluye ≥1 mes de fase activa)","12 meses"],a:2,w:"≥6 meses de signos continuos, incluido ≥1 mes de síntomas activos."},
+ {q:"Un hombre de 45 años está convencido desde hace dos años de que su esposa le es infiel. No hay alucinaciones notables y trabaja con normalidad. ¿Diagnóstico?",
+  o:["Esquizofrenia","Trastorno delirante, tipo celotípico","Trastorno esquizofreniforme","TOC con ausencia de introspección"],a:1,
+  w:"Delirio ≥1 mes, sin criterio A de esquizofrenia, funcionamiento conservado. Tema: infidelidad = celotípico."},
+ {q:"Una mujer cree que un famoso actor está enamorado de ella y le envía mensajes ocultos. ¿Subtipo de trastorno delirante?",
+  o:["Grandeza","Erotomaníaco","Persecutorio","Somático"],a:1,w:"Erotomaníaco: otra persona (a menudo de mayor estatus) lo ama."},
+ {q:"Una mujer lleva 8 meses con delirios y alucinaciones, con episodios depresivos mayores la mayor parte de la enfermedad, y tuvo más de 2 semanas de psicosis sin síntomas del ánimo. ¿Diagnóstico?",
+  o:["Esquizofrenia","Trastorno esquizoafectivo, tipo depresivo","Depresión mayor con características psicóticas","Trastorno delirante"],a:1,
+  w:"Psicosis + episodio del ánimo concurrente, ≥2 semanas de psicosis sin ánimo y ánimo presente la mayor parte del tiempo."},
+ {q:"Paciente con esquizofrenia que no mejora tras varios antipsicóticos con adherencia comprobada. ¿Qué recomienda la APA (2020)?",
+  o:["Suspender antipsicóticos","Clozapina","Solo psicoeducación","Benzodiacepina de mantenimiento"],a:1,w:"Clozapina para esquizofrenia resistente o riesgo de suicidio persistente."},
+ {q:"¿Cuál es una característica de buen pronóstico del trastorno esquizofreniforme?",
+  o:["Afecto embotado","Mal funcionamiento previo","Confusión o perplejidad","Inicio insidioso de años"],a:2,
+  w:"Requiere ≥2 de: psicosis notable en las primeras 4 semanas, confusión/perplejidad, buen funcionamiento previo, ausencia de afecto plano."},
+ {q:"Una joven con IMC de 15,5 restringe lo que come y tiene miedo intenso a engordar. Sin atracones ni purgas en 3 meses. ¿Diagnóstico completo?",
+  o:["Bulimia nerviosa, leve","Anorexia nerviosa, restrictiva, moderada","Anorexia nerviosa, restrictiva, grave","Trastorno de atracones"],a:2,
+  w:"IMC: leve ≥17; moderado 16–16,99; grave 15–15,99; extremo <15."},
+ {q:"¿Qué criterio separa la anorexia de la bulimia?",
+  o:["Presencia de atracones","Peso significativamente bajo","Vómito autoprovocado","Miedo a engordar"],a:1,w:"La anorexia exige peso significativamente bajo; la bulimia no."},
+ {q:"Frecuencia mínima de atracones y conductas compensatorias en la bulimia:",
+  o:["≥1/semana durante 1 mes","≥1/semana durante 3 meses","≥2/semana durante 3 meses","≥2/semana durante 6 meses"],a:1,w:"En promedio ≥1 vez por semana durante 3 meses."},
+ {q:"Una paciente con bulimia vomita 9 veces por semana. ¿Gravedad?",
+  o:["Leve","Moderada","Grave","Extrema"],a:2,w:"Leve 1–3; moderada 4–7; grave 8–13; extrema ≥14 conductas compensatorias/semana."},
+ {q:"Atracones ≥1/semana por 4 meses, come solo por vergüenza, malestar intenso, sin vómito, laxantes ni ejercicio excesivo. ¿Diagnóstico?",
+  o:["Bulimia nerviosa","Anorexia, tipo con atracones/purgas","Trastorno de atracones","Trastorno de síntomas somáticos"],a:2,w:"Atracones sin conducta compensatoria recurrente + ≥3 de 5 rasgos."},
+ {q:"Fármaco recomendado junto con TCC en la bulimia nerviosa:",
+  o:["Lisdexanfetamina","Fluoxetina (ISRS)","Clozapina","Naltrexona"],a:1,w:"TCC centrada en el trastorno + ISRS (fluoxetina)."},
+ {q:"En el trastorno por consumo de sustancias, ¿cuántos criterios (de 11, en 12 meses) definen gravedad moderada?",
+  o:["2–3","4–5","≥6","≥8"],a:1,w:"Leve 2–3; moderado 4–5; grave ≥6."},
+ {q:"Un hombre bebe a diario desde hace años. Diez horas después de dejar de beber presenta temblor, sudoración, pulso de 110, ansiedad e insomnio. ¿Qué cuadro es?",
+  o:["Intoxicación por alcohol","Abstinencia de alcohol","TAG","Trastorno por consumo leve"],a:1,w:"Abstinencia: ≥2 síntomas en horas o días tras cese de consumo intenso y prolongado; hiperactividad autonómica."},
+ {q:"Signo característico de intoxicación por alcohol:",
+  o:["Midriasis","Nistagmo","Inyección conjuntival","Aumento del apetito"],a:1,w:"Habla pastosa, incoordinación, marcha insegura, nistagmo, alteración de atención/memoria, estupor o coma."},
+ {q:"Fármacos de primera opción (APA 2018) para trastorno por consumo de alcohol moderado-grave sin uso de opioides:",
+  o:["Naltrexona o acamprosato","Diazepam de mantenimiento","Antidepresivo","Lisdexanfetamina"],a:0,w:"Naltrexona o acamprosato; alternativas: disulfiram, topiramato, gabapentina."},
+ {q:"Un joven con ojos rojos, boca seca, hambre intensa y taquicardia tras fumar hace una hora. ¿Qué cuadro?",
+  o:["Intoxicación por cannabis","Intoxicación por estimulantes","Abstinencia de tabaco","Intoxicación por alcohol"],a:0,w:"≥2 en 2 h: inyección conjuntival, aumento del apetito, boca seca, taquicardia."},
+ {q:"Tratamiento farmacológico aprobado para el trastorno por consumo de cannabis:",
+  o:["Naltrexona","Bupropión","No hay fármacos aprobados","Vareniclina"],a:2,w:"No hay fármacos aprobados; lo mejor respaldado es TCC, mejora motivacional y manejo de contingencias."},
+ {q:"¿Qué intervención tiene más evidencia en el trastorno por consumo de estimulantes?",
+  o:["Naltrexona","Manejo de contingencias","Disulfiram","Benzodiacepinas"],a:1,w:"No hay fármacos aprobados por la FDA; el manejo de contingencias tiene la mejor evidencia."},
+ {q:"Humor disfórico, fatiga, sueños vívidos desagradables, hipersomnia y aumento del apetito tras dejar la cocaína. ¿Qué cuadro?",
+  o:["Intoxicación por estimulantes","Abstinencia de estimulantes","Episodio depresivo mayor","Abstinencia de alcohol"],a:1,w:"Abstinencia de estimulantes: humor disfórico + ≥2 (fatiga, sueños vívidos, insomnio/hipersomnia, apetito, cambio psicomotor)."},
+ {q:"Sobre el tabaco en el DSM-5, es correcto que:",
+  o:["Existe intoxicación por tabaco","La abstinencia requiere ≥4 de 7 síntomas en 24 h","La abstinencia aparece a los 7 días","No existe trastorno por consumo de tabaco"],a:1,w:"No hay intoxicación por tabaco; abstinencia = ≥4 de 7 síntomas en las 24 h tras cese o reducción."},
+ {q:"La remisión 'continuada' de un trastorno por consumo se define como no cumplir criterios (salvo ansias) durante:",
+  o:["≥3 meses","≥6 meses","≥12 meses","≥24 meses"],a:2,w:"Inicial: ≥3 y <12 meses; continuada: ≥12 meses."}
+];
+
+/* ================== CASOS CLÍNICOS (10 preguntas cada uno) ================== */
+const CASES = [
+ {title:"Caso 1 · Psicosis en un estudiante",
+  text:[
+   "Andrés, 22 años, estudiante de ingeniería, es traído por su familia. Desde hace <b>7 meses</b> se ha aislado, dejó de asistir a clases y descuida su higiene. Hace <b>5 semanas</b> comenzó a decir que sus vecinos instalaron cámaras para vigilarlo y que \"la televisión envía mensajes sobre él\".",
+   "Refiere escuchar dos voces que comentan lo que hace. En la entrevista su discurso salta de un tema a otro sin conexión, su expresión facial es pobre y responde con monosílabos. No hay antecedentes de episodios depresivos ni maníacos. Antidoping negativo; TSH y exploración neurológica normales. Fuma cannabis \"de vez en cuando\" desde los 16 años."],
+  qs:[
+   {q:"¿Cuál es el diagnóstico más probable?",o:["Trastorno psicótico breve","Trastorno esquizofreniforme","Esquizofrenia","Trastorno delirante, tipo persecutorio"],a:2,w:"Criterio A + deterioro funcional + ≥6 meses de signos (7 meses incluyendo pródromo) con ≥1 mes de fase activa."},
+   {q:"La creencia de que lo vigilan con cámaras es un ejemplo de:",o:["Alucinación","Delirio persecutorio","Obsesión","Idea sobrevalorada sin importancia clínica"],a:1,w:"Delirio: creencia falsa y fija; tema persecutorio."},
+   {q:"Las voces que comentan lo que hace son:",o:["Alucinaciones auditivas","Ilusiones","Pseudoalucinaciones por ansiedad","Delirios somáticos"],a:0,w:"Percibir algo sin estímulo externo."},
+   {q:"La expresión facial pobre y responder con monosílabos corresponden a:",o:["Síntomas positivos","Síntomas negativos","Catatonía","Discurso desorganizado"],a:1,w:"Síntomas negativos: expresión emocional disminuida y abulia/alogia."},
+   {q:"¿Cuántos de los 5 síntomas del criterio A presenta Andrés?",o:["2","3","4","5"],a:2,w:"Delirios, alucinaciones, discurso desorganizado y síntomas negativos = 4 (no hay conducta catatónica). Se necesitan ≥2."},
+   {q:"¿Qué representan los 7 meses previos de aislamiento y descuido antes de la fase activa?",o:["Fase residual","Fase prodrómica","Episodio depresivo","Periodo de remisión"],a:1,w:"El criterio C incluye periodos prodrómicos (síntomas negativos o atenuados) dentro de los 6 meses."},
+   {q:"Si los síntomas tuvieran solo 3 meses de evolución total, el diagnóstico sería:",o:["Esquizofrenia","Trastorno esquizofreniforme","Psicótico breve","Esquizoafectivo"],a:1,w:"Esquizofreniforme: ≥1 mes y <6 meses."},
+   {q:"¿Por qué se descarta el trastorno esquizoafectivo?",o:["Porque hay alucinaciones","Porque no hay episodios mayores del ánimo concurrentes","Porque es joven","Porque consume cannabis"],a:1,w:"El esquizoafectivo requiere un episodio maníaco o depresivo mayor concurrente con el criterio A."},
+   {q:"Respecto al cannabis, la guía señala que:",o:["Protege contra la psicosis","El consumo intenso se asocia con mayor riesgo de esquizofrenia","Es tratamiento de los síntomas negativos","No tiene relación"],a:1,w:"El consumo intenso de cannabis se asocia con mayor riesgo (OMS)."},
+   {q:"Si tras dos antipsicóticos adecuados no mejora, ¿qué fármaco recomienda la APA?",o:["Clozapina","Diazepam","Fluoxetina","Litio en monoterapia"],a:0,w:"Clozapina en esquizofrenia resistente o con riesgo suicida persistente."}
+  ]},
+ {title:"Caso 2 · Asalto y síntomas que no ceden",
+  text:[
+   "Mariana, 29 años, fue asaltada con arma de fuego al salir del metro hace <b>10 semanas</b>. Desde entonces tiene pesadillas casi diarias y, cuando escucha motos, siente que \"vuelve a estar ahí\" con taquicardia y sudoración.",
+   "Dejó de usar el metro y cambió su ruta al trabajo. Se culpa por \"haber salido tarde\", ya no disfruta salir con amigas y se siente desconectada de su pareja. Está irritable, se sobresalta con cualquier ruido, duerme mal y le cuesta concentrarse. No consume sustancias y no tiene enfermedades médicas."],
+  qs:[
+   {q:"¿Cuál es el diagnóstico más probable?",o:["Trastorno por estrés agudo","Trastorno por estrés postraumático","Trastorno de pánico con agorafobia","Trastorno de ansiedad generalizada"],a:1,w:"Trauma + intrusión, evitación, cognición/ánimo y alerta durante más de 1 mes."},
+   {q:"El asalto con arma cumple el criterio A porque:",o:["Fue una amenaza real de muerte o lesión grave vivida directamente","Lo vio en televisión","Le ocurrió a un desconocido","Cualquier estrés lo cumple"],a:0,w:"Exposición a muerte, lesión grave o violencia sexual, real o amenaza."},
+   {q:"\"Siente que vuelve a estar ahí\" al escuchar motos es un síntoma de:",o:["Evitación","Intrusión (flashback/reacción disociativa)","Alerta","Despersonalización"],a:1,w:"Criterio B: reacciones disociativas (flashbacks) y reacción fisiológica ante recordatorios."},
+   {q:"Dejar de usar el metro corresponde al criterio:",o:["B – Intrusión","C – Evitación","D – Cognición y ánimo","E – Alerta"],a:1,w:"Evitación de lugares o situaciones que despiertan recuerdos."},
+   {q:"Culparse por \"haber salido tarde\" es un ejemplo de:",o:["Culpa distorsionada (criterio D)","Delirio de culpa","Obsesión","Hipervigilancia"],a:0,w:"Cambios negativos en cognición y ánimo: culpa distorsionada sobre causas o consecuencias."},
+   {q:"¿Cuántos síntomas mínimos del grupo E (alerta y reactividad) se requieren?",o:["≥1","≥2","≥3","≥4"],a:1,w:"B ≥1, C ≥1, D ≥2, E ≥2."},
+   {q:"Si la evaluación se hubiera hecho a los 15 días del asalto con los mismos síntomas, el diagnóstico sería:",o:["TEPT","Estrés agudo","Trastorno de adaptación","Ninguno"],a:1,w:"Estrés agudo: 3 días a 1 mes, ≥9 de 14 síntomas."},
+   {q:"Si los criterios completos hubieran aparecido 7 meses después del asalto, se añadiría el especificador:",o:["Con síntomas disociativos","Con expresión retardada","Crónico","Con inicio posparto"],a:1,w:"Expresión retardada: ≥6 meses después."},
+   {q:"Tratamiento de primera elección según VA/DoD 2023:",o:["Psicoterapia individual centrada en el trauma","Clonazepam","Cannabis medicinal","Antipsicótico"],a:0,w:"Exposición prolongada, procesamiento cognitivo o EMDR."},
+   {q:"Si Mariana no puede o no quiere psicoterapia, un fármaco recomendado es:",o:["Sertralina","Alprazolam","Haloperidol","Naltrexona"],a:0,w:"Sertralina, paroxetina, fluoxetina o venlafaxina; no benzodiacepinas."}
+  ]},
+ {title:"Caso 3 · Una adolescente que no come",
+  text:[
+   "Sofía, 17 años, es llevada por su madre. En el último año bajó de 54 a 41 kg (talla 1,63 m; <b>IMC ≈ 15,4</b>). Come solo verduras, cuenta calorías y corre 10 km al día. Dice que \"todavía tiene grasa en el abdomen\" y siente pánico al pensar en subir de peso.",
+   "En los últimos <b>3 meses</b> niega atracones y vómitos. Presenta amenorrea, bradicardia (FC 48) y piel seca. La madre está muy involucrada y dispuesta a participar en el tratamiento."],
+  qs:[
+   {q:"¿Cuál es el diagnóstico más probable?",o:["Bulimia nerviosa","Anorexia nerviosa","Trastorno de atracones","Trastorno de síntomas somáticos"],a:1,w:"Restricción + peso significativamente bajo + miedo a engordar + percepción alterada."},
+   {q:"¿Qué subtipo corresponde?",o:["Restrictivo","Con atracones/purgas","Mixto","No especificado"],a:0,w:"Sin atracones ni purgas en los últimos 3 meses; pérdida por dieta y ejercicio."},
+   {q:"Según el IMC de 15,4, la gravedad es:",o:["Leve","Moderada","Grave","Extrema"],a:2,w:"Grave: 15–15,99 kg/m²."},
+   {q:"Decir que \"todavía tiene grasa\" estando muy delgada corresponde al criterio:",o:["A – Restricción","B – Miedo a engordar","C – Alteración de la percepción del peso/figura","Ninguno"],a:2,w:"Criterio C: alteración en cómo percibe su peso o figura."},
+   {q:"El ejercicio excesivo en este caso se considera:",o:["Una conducta saludable","Una conducta para evitar ganar peso","Un atracón","Un criterio de bulimia exclusivamente"],a:1,w:"Parte de la restricción/conducta persistente que impide ganar peso."},
+   {q:"Si su IMC fuera 14,5, la gravedad sería:",o:["Moderada","Grave","Extrema","Leve"],a:2,w:"Extrema: <15 kg/m²."},
+   {q:"Si tuviera atracones y vómitos solo durante este cuadro, ¿se agrega diagnóstico de bulimia?",o:["Sí, siempre","No; se diagnostica anorexia tipo con atracones/purgas","Sí, si son ≥1/semana","Solo si hay laxantes"],a:1,w:"Si atracones y purgas ocurren solo durante la anorexia, no se diagnostica bulimia."},
+   {q:"¿Qué es lo primero en el tratamiento?",o:["Iniciar un ISRS","Estabilización médica y rehabilitación nutricional","Lisdexanfetamina","Solo observación"],a:1,w:"Tras la estabilización médica, la rehabilitación nutricional y recuperación de peso son esenciales."},
+   {q:"Dado que es adolescente con cuidador involucrado, la APA (2023) recomienda:",o:["Tratamiento basado en la familia","Psicoanálisis individual","Hospitalización indefinida","Antipsicótico"],a:0,w:"Tratamiento basado en la familia centrado en el trastorno alimentario."},
+   {q:"¿Qué dato la diferencia de la bulimia nerviosa?",o:["El miedo a engordar","El peso significativamente bajo","La autoevaluación ligada al peso","El ejercicio"],a:1,w:"La anorexia exige peso bajo; la bulimia no."}
+  ]},
+ {title:"Caso 4 · Bebedor en el hospital",
+  text:[
+   "Roberto, 48 años, ingresa para una cirugía de vesícula. Su esposa refiere que bebe casi una botella de tequila diaria desde hace 10 años. En el último año faltó varias veces al trabajo, intentó dejarlo sin éxito, necesita beber más para \"sentirse igual\", sigue bebiendo pese a la gastritis y pasa mucho tiempo recuperándose de las borracheras. Su esposa amenaza con dejarlo.",
+   "A las <b>12 horas</b> de su último trago presenta temblor de manos, sudoración, FC 112, náuseas, ansiedad e insomnio. Dice ver \"bichos en la pared\" pero sabe que no son reales. Está orientado."],
+  qs:[
+   {q:"El cuadro actual (12 h después del último trago) corresponde a:",o:["Intoxicación por alcohol","Abstinencia de alcohol","Delirium tremens","Trastorno de pánico"],a:1,w:"Cese de consumo intenso y prolongado + ≥2 síntomas en horas o días."},
+   {q:"El especificador correcto para la abstinencia es:",o:["Sin especificador","Con alteraciones de la percepción","Con inicio posparto","Con catatonía"],a:1,w:"Alucinaciones con prueba de realidad conservada, sin síndrome confusional (está orientado)."},
+   {q:"¿Cuántos criterios mínimos en 12 meses se requieren para trastorno por consumo de alcohol?",o:["1","2","4","6"],a:1,w:"≥2 de 11 criterios en 12 meses."},
+   {q:"Faltar al trabajo pertenece al grupo de criterios de:",o:["Control deteriorado","Deterioro social","Consumo de riesgo","Farmacológicos"],a:1,w:"Incumplir deberes (5–7: deterioro social)."},
+   {q:"Necesitar más alcohol para el mismo efecto es:",o:["Abstinencia","Tolerancia","Craving","Intoxicación"],a:1,w:"Tolerancia: criterio farmacológico."},
+   {q:"Seguir bebiendo pese a la gastritis pertenece al grupo:",o:["Control deteriorado","Deterioro social","Consumo de riesgo","Farmacológicos"],a:2,w:"Seguir pese a un problema físico o psicológico causado o empeorado por la sustancia."},
+   {q:"Roberto cumple al menos 7 criterios. ¿Gravedad?",o:["Leve","Moderado","Grave","Extremo"],a:2,w:"Leve 2–3, moderado 4–5, grave ≥6."},
+   {q:"¿Cuál es un signo de INTOXICACIÓN (no de abstinencia) por alcohol?",o:["Temblor de manos","Nistagmo","Taquicardia >100","Insomnio"],a:1,w:"Intoxicación: habla pastosa, incoordinación, marcha insegura, nistagmo, estupor/coma."},
+   {q:"Para la abstinencia aguda, la guía APA indica que las benzodiacepinas:",o:["No se usan nunca","Se usan para la abstinencia aguda","Son el tratamiento de mantenimiento","Se combinan con naltrexona de por vida"],a:1,w:"Benzodiacepinas solo para la abstinencia aguda (o comorbilidades que las requieran)."},
+   {q:"Para mantener la abstinencia a largo plazo (sin uso de opioides), la primera opción es:",o:["Naltrexona o acamprosato","Diazepam","Lisdexanfetamina","Vareniclina"],a:0,w:"APA 2018: naltrexona o acamprosato; alternativas disulfiram, topiramato, gabapentina."}
+  ]},
+ {title:"Caso 5 · Síntomas que la medicina no explica",
+  text:[
+   "Laura, 34 años, llega a urgencias porque \"no puede mover la pierna derecha\" desde hace 2 días, tras una fuerte discusión con su jefe. En la exploración, al pedirle que levante la pierna izquierda contra resistencia, la derecha empuja hacia abajo con fuerza (<b>signo de Hoover positivo</b>). Reflejos normales y resonancia sin alteraciones. No hay evidencia de que finja y no busca incapacidad laboral.",
+   "En la misma guardia: Pedro, 40 años, acude por <b>décima vez este año</b> con heridas que no cicatrizan; se encuentra una jeringa con heces en su mochila. No tiene demandas, seguro ni incapacidad pendientes. Y Ana, 52 años, sin síntomas físicos, lleva <b>8 meses</b> convencida de que tiene cáncer, se revisa los senos varias veces al día y pide estudios constantemente pese a resultados normales."],
+  qs:[
+   {q:"El diagnóstico más probable de Laura es:",o:["Trastorno facticio","Simulación","Trastorno de conversión (síntomas neurológicos funcionales)","Esclerosis múltiple"],a:2,w:"Síntoma motor incompatible con enfermedad neurológica reconocida, sin fingimiento."},
+   {q:"¿Qué tipo de síntoma presenta Laura?",o:["Ataques o convulsiones","Debilidad o parálisis","Anestesia","Síntoma sensitivo especial"],a:1,w:"Tipo: debilidad o parálisis."},
+   {q:"El signo de Hoover positivo sirve para:",o:["Demostrar que finge","Mostrar incompatibilidad con enfermedad neurológica","Diagnosticar ictus","Descartar ansiedad"],a:1,w:"Criterio B: hallazgos clínicos de incompatibilidad; no prueba fingimiento."},
+   {q:"La discusión con su jefe, según el DSM-5:",o:["Es requisito obligatorio","Se registra como especificador 'con factor de estrés psicológico'","Excluye el diagnóstico","Indica simulación"],a:1,w:"Ya no es requisito; es especificador."},
+   {q:"Si los síntomas de Laura duraran 8 meses, el curso sería:",o:["Agudo","Persistente","Episódico","Crónico grave"],a:1,w:"Agudo <6 meses; persistente ≥6 meses."},
+   {q:"El diagnóstico más probable de Pedro es:",o:["Simulación","Trastorno facticio","Conversión","Síntomas somáticos"],a:1,w:"Inducción de lesión con engaño identificado, sin recompensa externa obvia."},
+   {q:"¿Qué especificador corresponde a Pedro?",o:["Episodio único","Episodios recurrentes","Con predominio de dolor","Persistente"],a:1,w:"Episodios recurrentes: ≥2 eventos."},
+   {q:"Si Pedro buscara una indemnización económica, lo correcto sería pensar en:",o:["Trastorno facticio","Simulación (no es trastorno mental)","Conversión","Amnesia disociativa"],a:1,w:"Simulación: incentivo externo claro."},
+   {q:"El diagnóstico más probable de Ana es:",o:["Trastorno de síntomas somáticos","Trastorno de ansiedad por enfermedad, tipo con solicitud de asistencia","TOC","Trastorno delirante somático"],a:1,w:"Síntomas ausentes/leves, miedo a tener una enfermedad grave, conductas excesivas, ≥6 meses; pide estudios."},
+   {q:"Tratamiento inicial recomendado para Laura:",o:["Confrontarla por fingir","Explicar que los síntomas son reales y no indican enfermedad grave + fisioterapia especializada","Cirugía exploradora","Benzodiacepinas a largo plazo"],a:1,w:"Relación de apoyo, abordaje conjunto psiquiatría-neurología, fisioterapia; TCC para crisis."}
+  ]},
+ {title:"Caso 6 · El contador que no puede parar",
+  text:[
+   "Javier, 31 años, contador. Desde hace 2 años tiene pensamientos intrusos de que contaminará a su familia con gérmenes; sabe que son \"exagerados\" pero no puede quitárselos. Se lava las manos hasta 40 veces al día (piel agrietada) y revisa que las puertas estén cerradas contando hasta 7. Le ocupa unas <b>3 horas diarias</b> y llega tarde al trabajo.",
+   "Además, desde hace un año tiene <b>ataques súbitos</b> de palpitaciones, temblor, falta de aire, mareo y miedo a morir, que llegan a su máximo en 10 minutos, a veces mientras ve la TV. Desde hace 3 meses teme tener otro y evita hacer ejercicio. TSH normal; ECG normal; no consume sustancias."],
+  qs:[
+   {q:"El cuadro de los gérmenes y el lavado corresponde a:",o:["TAG","TOC","Fobia específica","Trastorno delirante"],a:1,w:"Obsesiones + compulsiones que ocupan >1 h/día y causan deterioro."},
+   {q:"Los pensamientos de contaminación son:",o:["Compulsiones","Obsesiones","Delirios","Alucinaciones"],a:1,w:"Pensamientos intrusos, no deseados, que causan ansiedad."},
+   {q:"Contar hasta 7 al revisar las puertas es:",o:["Una obsesión","Una compulsión mental","Un tic","Un síntoma negativo"],a:1,w:"Compulsiones pueden ser conductas o actos mentales (contar, rezar)."},
+   {q:"¿Qué especificador de introspección corresponde?",o:["Buena o aceptable","Poca","Ausente/creencias delirantes","No aplica"],a:0,w:"Reconoce que son exagerados: introspección buena o aceptable."},
+   {q:"Los ataques súbitos con pico en minutos, sin desencadenante, más 3 meses de miedo y evitación son:",o:["Trastorno de pánico","Agorafobia","Ataque de pánico como especificador del TOC únicamente","TAG"],a:0,w:"Ataques inesperados recurrentes + ≥1 mes de preocupación/evitación."},
+   {q:"¿Por qué era importante pedir TSH y ECG?",o:["Por rutina sin motivo","Porque hipertiroidismo o enfermedad cardiopulmonar pueden explicar ataques de pánico","Para descartar esquizofrenia","Para calcular IMC"],a:1,w:"Criterio C del pánico: no se debe a sustancia ni enfermedad médica."},
+   {q:"¿En qué se diferencia una obsesión de la preocupación del TAG?",o:["No hay diferencia","Las obsesiones son intrusivas y se neutralizan con compulsiones; el TAG se preocupa por problemas de la vida real","El TAG dura menos","Las obsesiones siempre son delirantes"],a:1,w:"Así lo distingue la guía."},
+   {q:"Tratamiento psicoterapéutico de elección para el TOC de Javier:",o:["EPR (exposición y prevención de respuesta)","EMDR","Terapia familiar","Psicoanálisis"],a:0,w:"TCC con EPR y/o ISRS."},
+   {q:"Si responde de forma incompleta a un ISRS, una alternativa es:",o:["Clomipramina o potenciar con antipsicótico (p. ej., aripiprazol)","Suspender todo","Benzodiacepina sola","Naltrexona"],a:0,w:"Alrededor de la mitad responde incompleto; alternativas: clomipramina o potenciación."},
+   {q:"Fármacos de primera línea para su trastorno de pánico:",o:["ISRS","Antipsicóticos","Estimulantes","Disulfiram"],a:0,w:"ISRS de primera línea; benzodiacepinas a veces como puente."}
+  ]}
+];
+
+/* ================== FLASHCARDS ================== */
+const FLASH = [
+ {b:"ans",f:"Ataques súbitos e inesperados de miedo intenso que alcanzan su máximo en minutos (≥4 de 13 síntomas) y después ≥1 mes de miedo a otro ataque o evitación.",n:"Trastorno de pánico",k:"Tema 10 · ISRS o TCC"},
+ {b:"ans",f:"Miedo en ≥2 de 5 situaciones (transporte, espacios abiertos, sitios cerrados, multitudes, estar solo fuera de casa) por temor a no poder escapar o recibir ayuda.",n:"Agorafobia",k:"Tema 10 · se diagnostica aparte del pánico"},
+ {b:"ans",f:"Preocupación excesiva por muchos temas cotidianos, difícil de controlar, ≥6 meses, con ≥3 de 6 síntomas (inquietud, fatiga, concentración, irritabilidad, tensión muscular, sueño).",n:"Trastorno de ansiedad generalizada (TAG)",k:"Tema 11 · ISRS/IRSN; NICE: sertralina"},
+ {b:"ans",f:"Miedo intenso a situaciones donde otros pueden observar o juzgar (hablar, comer en público) por temor a humillación o rechazo; ≥6 meses.",n:"Fobia social (ansiedad social)",k:"Tema 12 · TCC individual Clark y Wells"},
+ {b:"ans",f:"Miedo inmediato y desproporcionado ante un objeto o situación concreta (animales, alturas, sangre, avión), con evitación; ≥6 meses. Cinco tipos.",n:"Fobia específica",k:"Tema 13 · terapia de exposición"},
+ {b:"ans",f:"Pensamientos intrusos que angustian y actos repetitivos (lavar, revisar, contar) para neutralizarlos; >1 hora al día o deterioro.",n:"Trastorno obsesivo-compulsivo (TOC)",k:"Tema 14 · EPR y/o ISRS"},
+ {b:"ans",f:"Tras un trauma: ≥9 de 14 síntomas (intrusión, ánimo negativo, disociación, evitación, alerta) que duran de 3 días a 1 mes.",n:"Trastorno por estrés agudo",k:"Tema 15"},
+ {b:"ans",f:"Tras un trauma: intrusión (≥1), evitación (≥1), cambios en cognición/ánimo (≥2) y alerta (≥2) durante más de 1 mes.",n:"Trastorno por estrés postraumático (TEPT)",k:"Tema 16 · psicoterapia centrada en trauma"},
+ {b:"ans",f:"Dos o más estados de personalidad bien definidos, con discontinuidad del sentido de sí mismo y lagunas de memoria recurrentes.",n:"Trastorno de identidad disociativo",k:"Tema 17"},
+ {b:"ans",f:"Incapacidad de recordar información autobiográfica importante, generalmente traumática, incompatible con el olvido normal; puede haber fuga.",n:"Amnesia disociativa",k:"Tema 17 · especificador: con fuga disociativa"},
+ {b:"ans",f:"Falsificar o provocarse síntomas o lesiones, presentándose como enfermo, con engaño identificado y SIN recompensa externa obvia.",n:"Trastorno facticio",k:"Tema 18 · si es en otro, se diagnostica al autor"},
+ {b:"ans",f:"Fingir síntomas con un incentivo externo claro (dinero, evitar el trabajo o la cárcel). No es un trastorno mental.",n:"Simulación",k:"Diferencial del facticio y la conversión"},
+ {b:"ans",f:"Síntomas motores o sensitivos reales (parálisis, crisis, ceguera) incompatibles con enfermedad neurológica reconocida; no son fingidos.",n:"Trastorno de conversión (síntomas neurológicos funcionales)",k:"Tema 19 · agudo <6 m / persistente ≥6 m"},
+ {b:"ans",f:"Uno o más síntomas físicos con respuesta excesiva: pensamientos desproporcionados, ansiedad por la salud o tiempo/energía excesivos; >6 meses.",n:"Trastorno de síntomas somáticos",k:"Tema 20 · especificador: con predominio de dolor"},
+ {b:"ans",f:"Miedo a tener o contraer una enfermedad grave, con síntomas ausentes o leves, revisiones o evitación excesivas; ≥6 meses.",n:"Trastorno de ansiedad por enfermedad",k:"Tema 20 · con solicitud o evitación de asistencia"},
+ {b:"psi",f:"Uno o más delirios ≥1 mes, sin cumplir criterio A de esquizofrenia; fuera del delirio el funcionamiento es casi normal y la conducta no es extravagante.",n:"Trastorno delirante",k:"Tema 21 · subtipos: erotomaníaco, grandeza, celotípico, persecutorio, somático"},
+ {b:"psi",f:"Delirios, alucinaciones, discurso o conducta desorganizada durante ≥1 día y <1 mes, con retorno total al funcionamiento previo.",n:"Trastorno psicótico breve",k:"Tema 22 · con/sin estresor, inicio posparto"},
+ {b:"psi",f:"Cumple el criterio A de esquizofrenia, pero el episodio dura ≥1 mes y <6 meses; puede ser 'provisional'.",n:"Trastorno esquizofreniforme",k:"Tema 23"},
+ {b:"psi",f:"≥2 de 5 síntomas (delirios, alucinaciones, discurso desorganizado, conducta desorganizada/catatónica, negativos), deterioro funcional y ≥6 meses con ≥1 mes de fase activa.",n:"Esquizofrenia",k:"Tema 24 · antipsicótico; clozapina si resistente"},
+ {b:"psi",f:"Psicosis (criterio A) junto con un episodio mayor del ánimo, más ≥2 semanas de delirios/alucinaciones sin síntomas afectivos; el ánimo está presente la mayor parte del tiempo.",n:"Trastorno esquizoafectivo",k:"Tema 25 · tipo bipolar o depresivo"},
+ {b:"ali",f:"Restricción de la ingesta con peso significativamente bajo, miedo intenso a engordar y percepción alterada del cuerpo. Gravedad por IMC.",n:"Anorexia nerviosa",k:"Tema 26 · restrictiva o con atracones/purgas"},
+ {b:"ali",f:"Atracones recurrentes seguidos de vómito, laxantes, ayuno o ejercicio excesivo, ≥1 vez por semana durante 3 meses; autoestima ligada al peso.",n:"Bulimia nerviosa",k:"Tema 27 · TCC + fluoxetina"},
+ {b:"ali",f:"Atracones recurrentes con malestar intenso (comer rápido, sin hambre, solo por vergüenza), ≥1/semana × 3 meses, SIN conductas compensatorias.",n:"Trastorno de atracones",k:"Tema 28 · TCC/IPT; lisdexanfetamina"},
+ {b:"sus",f:"Habla pastosa, incoordinación, marcha insegura, nistagmo, alteración de la atención o memoria, hasta estupor o coma tras beber.",n:"Intoxicación por alcohol",k:"Tema 29"},
+ {b:"sus",f:"Horas o días tras dejar un consumo intenso: sudoración, pulso >100, temblor de manos, insomnio, náuseas, alucinaciones transitorias, ansiedad, convulsiones.",n:"Abstinencia de alcohol",k:"Tema 29 · benzodiacepinas solo en fase aguda"},
+ {b:"sus",f:"Patrón problemático de consumo con ≥2 de 11 criterios en 12 meses (control deteriorado, deterioro social, consumo de riesgo, tolerancia/abstinencia).",n:"Trastorno por consumo de sustancias",k:"Leve 2–3 · moderado 4–5 · grave ≥6"},
+ {b:"sus",f:"Ojos rojos (inyección conjuntival), aumento del apetito, boca seca y taquicardia en las 2 horas tras el consumo.",n:"Intoxicación por cannabis",k:"Tema 30"},
+ {b:"sus",f:"Tras uso diario por meses: ≥3 en ~1 semana de irritabilidad, ansiedad, insomnio, menos apetito, intranquilidad, ánimo deprimido y un síntoma físico.",n:"Abstinencia de cannabis",k:"Tema 30 · sin fármacos aprobados"},
+ {b:"sus",f:"Euforia, hipervigilancia, conducta estereotipada + taquicardia, midriasis, cambios de TA, sudor, dolor torácico, convulsiones tras consumir cocaína o anfetaminas.",n:"Intoxicación por estimulantes",k:"Tema 31"},
+ {b:"sus",f:"Humor disfórico con fatiga, sueños vívidos desagradables, insomnio o hipersomnia y aumento del apetito al dejar la cocaína.",n:"Abstinencia de estimulantes",k:"Tema 31 · manejo de contingencias"},
+ {b:"sus",f:"En las 24 h tras dejar el consumo diario: ≥4 de 7 (irritabilidad, ansiedad, concentración, apetito, intranquilidad, ánimo deprimido, insomnio). No existe intoxicación en el DSM-5.",n:"Abstinencia de tabaco",k:"Tema 32 · TSN, vareniclina, bupropión"}
+];
+
+/* ================== UTILIDADES ================== */
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const L="abcd";
+
+/* Construye un cuestionario reutilizable (examen y caso clínico) */
+function makeQuiz(prefix, getQs){
+  const list=document.getElementById(prefix+"-list");
+  const scoreEl=document.getElementById(prefix+"-score");
+  const prog=document.getElementById(prefix+"-progress");
+  let qs=[], graded=false;
+
+  function render(){
+    // baraja opciones conservando la respuesta correcta
+    qs=getQs().map(q=>{const idx=shuffle(q.o.map((_,i)=>i));return {q:q.q,w:q.w,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a)};});
+    graded=false; scoreEl.className="score"; scoreEl.innerHTML="";
+    list.innerHTML=qs.map((q,i)=>`
+      <div class="card" id="${prefix}-q${i}">
+        <div class="q-head"><span class="q-num">${i+1}.</span>${q.q}<span class="res"></span></div>
+        ${q.o.map((o,j)=>`<label class="opt"><input type="radio" name="${prefix}-${i}" value="${j}"><span><b>${L[j]})</b> ${o}</span></label>`).join("")}
+        <div class="why"></div>
+      </div>`).join("");
+    list.querySelectorAll("input").forEach(inp=>inp.addEventListener("change",update));
+    update();
+  }
+  function answered(){return qs.filter((_,i)=>list.querySelector(`input[name="${prefix}-${i}"]:checked`)).length;}
+  function update(){prog.textContent=`Respondidas: ${answered()} / ${qs.length}`;}
+  function grade(){
+    let ok=0;
+    qs.forEach((q,i)=>{
+      const card=document.getElementById(`${prefix}-q${i}`);
+      const sel=card.querySelector("input:checked");
+      const opts=card.querySelectorAll(".opt");
+      opts.forEach(o=>o.classList.remove("correct","wrong"));
+      opts[q.a].classList.add("correct");
+      const good=sel && +sel.value===q.a;
+      if(sel && !good) opts[+sel.value].classList.add("wrong");
+      if(good) ok++;
+      card.classList.remove("graded-ok","graded-bad");
+      card.classList.add("graded", good?"graded-ok":"graded-bad");
+      card.querySelector(".res").innerHTML= good?'<span class="tag ok">Correcta</span>':(sel?'<span class="tag bad">Incorrecta</span>':'<span class="tag bad">Sin responder</span>');
+      card.querySelector(".why").innerHTML=`<b>Respuesta: ${L[q.a]}) ${q.o[q.a]}.</b> ${q.w}`;
+    });
+    const pct=Math.round(ok/qs.length*100), nota=(ok/qs.length*10).toFixed(1);
+    scoreEl.innerHTML=`Calificación: <strong>${nota} / 10</strong> &nbsp;·&nbsp; ${ok} correctas, ${qs.length-ok} incorrectas o sin responder (${pct}%).`;
+    scoreEl.className="score show";
+    graded=true;
+    scoreEl.scrollIntoView({behavior:"smooth",block:"center"});
+  }
+  document.getElementById(prefix+"-grade").addEventListener("click",grade);
+  document.getElementById(prefix+"-reset").addEventListener("click",()=>{render();window.scrollTo({top:0,behavior:"smooth"});});
+  return {render};
+}
+
+/* Examen: 20 preguntas aleatorias del banco en cada reinicio */
+const EXAM_N=20;
+const exam=makeQuiz("ex",()=>shuffle(EXAM).slice(0,EXAM_N));
+exam.render();
+
+/* Caso clínico */
+const sel=document.getElementById("case-select");
+sel.innerHTML=CASES.map((c,i)=>`<option value="${i}">${c.title}</option>`).join("");
+function showCase(){const c=CASES[+sel.value];document.getElementById("case-text").innerHTML=`<h3>${c.title}</h3>`+c.text.map(p=>`<p>${p}</p>`).join("");}
+const caseQuiz=makeQuiz("cs",()=>CASES[+sel.value].qs);
+sel.addEventListener("change",()=>{showCase();caseQuiz.render();});
+showCase(); caseQuiz.render();
+
+/* Flashcards */
+let deck=[], pos=0;
+const card=document.getElementById("fc-card");
+function buildDeck(){const f=document.getElementById("fc-filter").value;deck=FLASH.filter(c=>f==="all"||c.b===f);pos=0;showCard();}
+function showCard(){
+  card.classList.remove("flipped");
+  const c=deck[pos];
+  // espera a que termine de girar antes de cambiar el reverso
+  setTimeout(()=>{document.getElementById("fc-name").textContent=c.n;document.getElementById("fc-key").textContent=c.k;},card.classList.contains("flipped")?0:150);
+  document.getElementById("fc-front").textContent=c.f;
+  document.getElementById("fc-progress").textContent=`Tarjeta ${pos+1} de ${deck.length}`;
+}
+function flip(){card.classList.toggle("flipped");}
+card.addEventListener("click",flip);
+document.getElementById("fc-flip").addEventListener("click",flip);
+document.getElementById("fc-next").addEventListener("click",()=>{pos=(pos+1)%deck.length;showCard();});
+document.getElementById("fc-prev").addEventListener("click",()=>{pos=(pos-1+deck.length)%deck.length;showCard();});
+document.getElementById("fc-shuffle").addEventListener("click",()=>{deck=shuffle(deck);pos=0;showCard();});
+document.getElementById("fc-filter").addEventListener("change",buildDeck);
+document.addEventListener("keydown",e=>{
+  if(document.getElementById("flash").hidden||e.target.tagName==="SELECT")return;
+  if(e.key==="ArrowRight")document.getElementById("fc-next").click();
+  else if(e.key==="ArrowLeft")document.getElementById("fc-prev").click();
+  else if(e.key===" "){e.preventDefault();flip();}
+});
+buildDeck();
+
+/* Pestañas */
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("nav.tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["examen","caso","flash"].forEach(id=>document.getElementById(id).hidden=(id!==b.dataset.tab));
+}));
+</script>
+</body>
+</html>
