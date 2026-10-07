@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Psiquiatría DSM-5: Estudio</title>
-<meta name="description" content="Examen de opción múltiple por bloque, un caso clínico por patología y flashcards de psiquiatría (DSM-5, temas 10–32).">
+<meta name="description" content="Examen de opción múltiple por bloque, casos clínicos aleatorios con historial y flashcards de psiquiatría (DSM-5, temas 10–32).">
 <style>
 :root{
   --bg:#f6f5f2; --surface:#ffffff; --surface-2:#efede8; --text:#1f2328; --muted:#5f6670;
@@ -63,6 +63,18 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--bo
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
 .chip{font:inherit;font-size:.92rem;font-weight:600;padding:8px 14px;border-radius:99px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.lockmsg{padding:12px 14px;border:1px dashed var(--border);border-radius:10px;color:var(--muted);background:var(--surface)}
+.hist{margin-top:28px;padding-top:16px;border-top:1px solid var(--border)}
+.hist-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.hist-head h2{font-size:1.15rem;margin:0}
+.btn.small{padding:6px 12px;font-size:.88rem}
+.hist-item{display:flex;width:100%;justify-content:space-between;align-items:center;gap:12px;text-align:left;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin:8px 0;cursor:pointer}
+.hist-item:hover{background:var(--surface-2)}
+.hist-item small{color:var(--muted)}
+.hist-score{font-weight:700;font-size:1.1rem;flex:none;padding:4px 10px;border-radius:8px}
+.hist-score.ok{background:var(--ok-bg);color:var(--ok)}
+.hist-score.bad{background:var(--bad-bg);color:var(--bad)}
+[hidden]{display:none !important}
 /* Flashcards */
 .fc-area{display:flex;flex-direction:column;align-items:center}
 .flash{width:100%;max-width:560px;height:320px;perspective:1200px;cursor:pointer;margin:6px 0 14px}
@@ -108,20 +120,40 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--bo
 
   <!-- CASO CLÍNICO -->
   <section id="caso" hidden>
-    <div class="toolbar">
-      <label for="case-select"><strong>Caso:</strong></label>
-      <select id="case-select"></select>
-      <button class="btn secondary" id="case-prev" aria-label="Caso anterior">←</button>
-      <button class="btn secondary" id="case-next" aria-label="Caso siguiente">→</button>
+    <div class="chips" id="cs-blocks" role="group" aria-label="Elegir bloque de casos"></div>
+    <p class="progress" id="cs-info"></p>
+
+    <div id="cs-live">
+      <div class="case-text" id="case-text"></div>
+      <div class="sticky-bar toolbar">
+        <button class="btn" id="cs-grade">Calificación</button>
+        <button class="btn secondary" id="cs-reset">Reiniciar (otro caso)</button>
+        <button class="btn secondary" id="cs-histbtn">Historial (0)</button>
+        <span class="progress" id="cs-progress"></span>
+      </div>
+      <div class="score" id="cs-score"></div>
+      <div id="cs-list"></div>
+      <p class="lockmsg" id="cs-lock">Responde primero el diagnóstico. Al elegirlo se fija tu respuesta y se desbloquean las otras 9 preguntas.</p>
     </div>
-    <div class="case-text" id="case-text"></div>
-    <div class="sticky-bar toolbar">
-      <button class="btn" id="cs-grade">Calificación</button>
-      <button class="btn secondary" id="cs-reset">Reiniciar</button>
-      <span class="progress" id="cs-progress"></span>
+
+    <div id="cs-review" hidden>
+      <div class="toolbar">
+        <button class="btn" id="rv-back">← Volver al caso actual</button>
+        <button class="btn secondary" id="rv-retry">Intentar de nuevo este caso</button>
+      </div>
+      <div class="case-text" id="rv-text"></div>
+      <div class="score show" id="rv-score"></div>
+      <div id="rv-list"></div>
     </div>
-    <div class="score" id="cs-score"></div>
-    <div id="cs-list"></div>
+
+    <div class="hist" id="cs-hist">
+      <div class="hist-head">
+        <h2>Casos anteriores</h2>
+        <button class="btn secondary small" id="cs-clear">Borrar historial</button>
+      </div>
+      <p class="progress">Cada caso que calificas o dejas al reiniciar se guarda aquí en este navegador. Toca uno para revisar tus respuestas.</p>
+      <div id="cs-hist-list"></div>
+    </div>
   </section>
 
   <!-- FLASHCARDS -->
@@ -856,16 +888,142 @@ chipsEl.addEventListener("click",e=>{
 });
 exInfo(); exam.render();
 
-/* Caso clínico */
-const sel=document.getElementById("case-select");
-sel.innerHTML=BLOCKS.slice(1).map(([k,l])=>`<optgroup label="${l}">`+CASES.map((c,i)=>c.b===k?`<option value="${i}">${c.title}</option>`:"").join("")+`</optgroup>`).join("");
-function showCase(){const c=CASES[+sel.value];document.getElementById("case-text").innerHTML=`<h3>${c.title}</h3>`+c.text.map(p=>`<p>${p}</p>`).join("");}
-const caseQuiz=makeQuiz("cs",()=>CASES[+sel.value].qs);
-function goCase(i){sel.value=String((i+CASES.length)%CASES.length);showCase();caseQuiz.render();}
-sel.addEventListener("change",()=>goCase(+sel.value));
-document.getElementById("case-prev").addEventListener("click",()=>goCase(+sel.value-1));
-document.getElementById("case-next").addEventListener("click",()=>goCase(+sel.value+1));
-showCase(); caseQuiz.render();
+/* ================== CASO CLÍNICO ALEATORIO + HISTORIAL ================== */
+const CS_KEY="psiq-casos-v1", HIST_MAX=100;
+let cs={block:"all",deck:[],cur:null,hist:[]};
+try{const d=JSON.parse(localStorage.getItem(CS_KEY));if(d&&Array.isArray(d.hist))cs=Object.assign(cs,d);}catch(e){}
+if(cs.cur&&!CASES[cs.cur.idx])cs.cur=null;
+function csSave(){try{localStorage.setItem(CS_KEY,JSON.stringify(cs));}catch(e){}}
+const $=id=>document.getElementById(id);
+const blockName=k=>(BLOCKS.find(b=>b[0]===k)||["",""])[1];
+function csPool(){return CASES.map((_,i)=>i).filter(i=>cs.block==="all"||CASES[i].b===cs.block);}
+
+/* Baraja sin repetir: recorre todos los casos del bloque antes de repetir alguno */
+function csNextIdx(){
+  const pool=csPool();
+  cs.deck=cs.deck.filter(i=>pool.includes(i));
+  if(!cs.deck.length){
+    cs.deck=shuffle(pool);
+    if(cs.cur&&cs.deck.length>1&&cs.deck[0]===cs.cur.idx)cs.deck.push(cs.deck.shift());
+  }
+  return cs.deck.shift();
+}
+function csNew(idx){
+  const c=CASES[idx];
+  cs.cur={idx,order:c.qs.map(q=>shuffle(q.o.map((_,i)=>i))),sel:c.qs.map(()=>null),graded:false,id:null};
+  csSave(); csShowLive(); csRenderLive();
+}
+function csScore(rec){const c=CASES[rec.idx];return c.qs.reduce((n,q,i)=>n+(rec.sel[i]!==null&&rec.order[i][rec.sel[i]]===q.a?1:0),0);}
+
+/* Guarda el caso actual en el historial (si tiene al menos una respuesta) */
+function csArchive(){
+  const r=cs.cur; if(!r||r.sel.every(s=>s===null))return;
+  if(!r.id)r.id=Date.now();
+  const entry={id:r.id,idx:r.idx,order:r.order,sel:r.sel.slice(),ok:csScore(r),ts:Date.now(),graded:r.graded};
+  const k=cs.hist.findIndex(h=>h.id===r.id);
+  if(k>=0)cs.hist[k]=entry; else cs.hist.unshift(entry);
+  cs.hist=cs.hist.slice(0,HIST_MAX);
+  csSave(); csRenderHist();
+}
+
+function cardHTML(prefix,i,q,order){
+  return `<div class="card" id="${prefix}-q${i}">
+    <div class="q-head"><span class="q-num">${i+1}.</span>${q.q}<span class="res"></span></div>
+    ${order.map((oi,j)=>`<label class="opt"><input type="radio" name="${prefix}-${i}" value="${j}"><span><b>${L[j]})</b> ${q.o[oi]}</span></label>`).join("")}
+    <div class="why"></div></div>`;
+}
+function markCard(card,q,order,s){
+  const opts=card.querySelectorAll(".opt"), right=order.indexOf(q.a), good=s===right;
+  opts.forEach(o=>{o.classList.remove("correct","wrong");o.querySelector("input").disabled=true;});
+  opts[right].classList.add("correct");
+  if(s!==null&&!good)opts[s].classList.add("wrong");
+  if(s!==null)opts[s].querySelector("input").checked=true;
+  card.classList.add("graded",good?"graded-ok":"graded-bad");
+  card.querySelector(".res").innerHTML=good?'<span class="tag ok">Correcta</span>':(s!==null?'<span class="tag bad">Incorrecta</span>':'<span class="tag bad">Sin responder</span>');
+  card.querySelector(".why").innerHTML=`<b>Respuesta: ${L[right]}) ${q.o[q.a]}.</b> ${q.w}`;
+}
+function caseTextHTML(c,reveal){
+  return `<h3>${reveal?"Diagnóstico: "+c.title:"Caso clínico"}</h3>`+c.text.map(p=>`<p>${p}</p>`).join("");
+}
+function scoreHTML(ok,total){return `Calificación: <strong>${(ok/total*10).toFixed(1)} / 10</strong> &nbsp;·&nbsp; ${ok} correctas, ${total-ok} incorrectas o sin responder.`;}
+
+function csRenderLive(){
+  const r=cs.cur, c=CASES[r.idx];
+  $("case-text").innerHTML=caseTextHTML(c,r.graded);
+  $("cs-list").innerHTML=c.qs.map((q,i)=>cardHTML("cs",i,q,r.order[i])).join("");
+  const cards=$("cs-list").querySelectorAll(".card");
+  if(r.graded){
+    c.qs.forEach((q,i)=>markCard(cards[i],q,r.order[i],r.sel[i]));
+    $("cs-score").innerHTML=scoreHTML(csScore(r),c.qs.length); $("cs-score").className="score show";
+  }else{
+    $("cs-score").className="score";
+    r.sel.forEach((s,i)=>{if(s!==null)cards[i].querySelectorAll("input")[s].checked=true;});
+    $("cs-list").querySelectorAll("input").forEach(inp=>inp.addEventListener("change",()=>{
+      const i=+inp.name.split("-")[1]; r.sel[i]=+inp.value; csSave(); csLockState();
+    }));
+  }
+  csLockState(); csInfo();
+}
+/* La pregunta 1 (diagnóstico) se fija al contestarla; hasta entonces las demás están ocultas */
+function csLockState(){
+  const r=cs.cur, cards=$("cs-list").querySelectorAll(".card"), open=r.graded||r.sel[0]!==null;
+  cards.forEach((cd,i)=>{if(i>0)cd.hidden=!open;});
+  if(r.sel[0]!==null)cards[0].querySelectorAll("input").forEach(x=>x.disabled=true);
+  $("cs-lock").hidden=open;
+  const n=r.sel.filter(s=>s!==null).length;
+  $("cs-progress").textContent=`Respondidas: ${n} / ${r.sel.length}`;
+}
+function csInfo(){
+  const pool=csPool().length, seen=pool-cs.deck.length;
+  $("cs-info").textContent=`Caso ${seen} de ${pool} de este bloque. Reiniciar te da un caso de otra enfermedad; no se repite ninguno hasta terminar la ronda.`;
+}
+function csGrade(){
+  const r=cs.cur; if(r.graded)return;
+  r.graded=true; csArchive(); csRenderLive();
+  $("cs-score").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function csRenderHist(){
+  $("cs-histbtn").textContent=`Historial (${cs.hist.length})`;
+  const fmt=t=>new Date(t).toLocaleString("es-MX",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+  $("cs-hist-list").innerHTML=cs.hist.length?cs.hist.map(h=>{
+    const c=CASES[h.idx]; if(!c)return "";
+    const nota=(h.ok/c.qs.length*10).toFixed(1);
+    return `<button class="hist-item" data-id="${h.id}"><span><b>${c.title}</b><br><small>${fmt(h.ts)}${h.graded?"":" · guardado al reiniciar"}</small></span><span class="hist-score ${h.ok/c.qs.length>=0.6?"ok":"bad"}">${nota}</span></button>`;
+  }).join(""):'<p class="progress">Aún no hay casos guardados.</p>';
+  $("cs-clear").hidden=!cs.hist.length;
+}
+function csShowLive(){$("cs-live").hidden=false;$("cs-review").hidden=true;}
+let rvIdx=null;
+function csReview(id){
+  const h=cs.hist.find(x=>x.id===id); if(!h)return;
+  const c=CASES[h.idx]; rvIdx=h.idx;
+  $("rv-text").innerHTML=caseTextHTML(c,true);
+  $("rv-score").innerHTML=scoreHTML(h.ok,c.qs.length);
+  $("rv-list").innerHTML=c.qs.map((q,i)=>cardHTML("rv",i,q,h.order[i])).join("");
+  const cards=$("rv-list").querySelectorAll(".card");
+  c.qs.forEach((q,i)=>markCard(cards[i],q,h.order[i],h.sel[i]));
+  $("cs-live").hidden=true; $("cs-review").hidden=false;
+  $("cs-review").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+const csChips=$("cs-blocks");
+csChips.innerHTML=BLOCKS.map(([k,l])=>`<button class="chip" data-b="${k}" aria-pressed="${k===cs.block}">${l}</button>`).join("");
+csChips.addEventListener("click",e=>{
+  const ch=e.target.closest(".chip"); if(!ch||ch.dataset.b===cs.block)return;
+  csArchive(); cs.block=ch.dataset.b; cs.deck=[];
+  csChips.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===ch));
+  csNew(csNextIdx());
+});
+$("cs-grade").addEventListener("click",csGrade);
+$("cs-reset").addEventListener("click",()=>{csArchive();csNew(csNextIdx());window.scrollTo({top:0,behavior:"smooth"});});
+$("cs-histbtn").addEventListener("click",()=>$("cs-hist").scrollIntoView({behavior:"smooth",block:"start"}));
+$("cs-hist-list").addEventListener("click",e=>{const b=e.target.closest(".hist-item");if(b)csReview(+b.dataset.id);});
+$("rv-back").addEventListener("click",()=>{csShowLive();window.scrollTo({top:0,behavior:"smooth"});});
+$("rv-retry").addEventListener("click",()=>{csArchive();csNew(rvIdx);window.scrollTo({top:0,behavior:"smooth"});});
+$("cs-clear").addEventListener("click",()=>{if(confirm("¿Borrar todos los casos guardados?")){cs.hist=[];csSave();csRenderHist();}});
+
+csRenderHist();
+if(cs.cur){csShowLive();csRenderLive();} else csNew(csNextIdx());
 
 /* Flashcards */
 let deck=[], pos=0;
