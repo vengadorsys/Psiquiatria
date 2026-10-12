@@ -29,6 +29,9 @@
   var btnPdf, btnPdfLabel, btnCopy, btnCopyLabel, btnReset;
   var lastTotal = null;
   var pdfLoading = false;
+  // En un visor que no permite descargas directas (p. ej. una vista previa
+  // incrustada), el anfitrión puede ofrecer su propio canal de guardado.
+  var saveChannel = null;
 
   /* ----- 1. Lectura del formulario ----- */
 
@@ -272,12 +275,18 @@
           throw new Error("jsPDF no disponible");
         }
         btnPdfLabel.textContent = "Generando PDF…";
-        buildPdf(res);
+        return buildPdf(res);
+      }).then(function () {
         btnPdfLabel.textContent = "✓ PDF descargado";
         notifyDownloaded();
       }).catch(function (err) {
-        console.warn("[pdf] fallo:", err);
-        btnPdfLabel.textContent = "No se pudo generar el PDF";
+        var code = err && err.code;
+        if (code === "declined") {
+          btnPdfLabel.textContent = "Descarga cancelada";
+        } else {
+          console.warn("[pdf] fallo:", err);
+          btnPdfLabel.textContent = "No se pudo generar el PDF";
+        }
       }).then(function () {
         pdfLoading = false;
         btnPdf.disabled = false;
@@ -371,7 +380,48 @@
     doc.setFontSize(8);
     doc.text(pdfText((BRAND.name || "Escala Glasgow") + " · cálculo realizado en el dispositivo del usuario"), M, 292);
 
-    doc.save("escala-glasgow-" + (st.hasNT ? "NT" : st.total) + ".pdf");
+    var filename = "escala-glasgow-" + (st.hasNT ? "NT" : st.total) + ".pdf";
+    return deliverPdf(doc.output("blob"), filename);
+  }
+
+  // Descarga normal en cualquier alojamiento web; si la página corre dentro de
+  // un visor con canal propio de guardado, se usa ese.
+  function deliverPdf(blob, filename) {
+    if (!saveChannel) {
+      anchorDownload(blob, filename);
+      return Promise.resolve("saved");
+    }
+    return saveChannel.then(function (host) {
+      if (!host || typeof host.save !== "function") {
+        anchorDownload(blob, filename);
+        return "saved";
+      }
+      return host.save({ filename: filename, data: blob }).then(function () { return "saved"; });
+    });
+  }
+
+  function anchorDownload(blob, filename) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.rel = "noopener";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 4000);
+  }
+
+  function initSaveChannel() {
+    if (window.claude && typeof window.claude.use === "function") {
+      try {
+        saveChannel = Promise.resolve(window.claude.use("downloads"))
+          .catch(function () { return null; });
+      } catch (e) { saveChannel = null; }
+    }
   }
 
   // Las fuentes estándar del PDF no incluyen algunos signos tipográficos:
@@ -506,6 +556,7 @@
     btnCopyLabel = $("[data-copy-label]", card);
     btnReset = $("[data-reset]", card);
 
+    safe(initSaveChannel, "initSaveChannel");
     safe(initForm, "initForm");
     safe(render, "render");
     safe(initCopy, "initCopy");

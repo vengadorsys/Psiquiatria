@@ -38,6 +38,7 @@
   --shadow:   0 1px 2px rgba(16, 36, 58, .05), 0 8px 24px rgba(16, 36, 58, .06);
   --shadow-lg:0 2px 4px rgba(16, 36, 58, .06), 0 18px 48px rgba(16, 36, 58, .12);
   --wrap:     1060px;
+  color-scheme: light;
   --ease:     cubic-bezier(.4, 0, .2, 1);
 }
 
@@ -88,7 +89,7 @@ main > section.ad-wrap { padding-block: 0; }
 
 /* ---------- 3. Cabecera ---------- */
 .site-header {
-  position: sticky; top: 0; z-index: 20;
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
   background: rgba(255, 255, 255, .92);
   backdrop-filter: saturate(160%) blur(8px);
   border-bottom: 1px solid var(--line);
@@ -116,7 +117,7 @@ main > section.ad-wrap { padding-block: 0; }
 }
 
 .result-bar {
-  position: sticky; top: 58px; z-index: 10;
+  position: sticky; top: calc(58px + env(safe-area-inset-top, 0px)); z-index: 10;
   display: flex; align-items: center; gap: clamp(12px, 3vw, 22px);
   padding: 14px clamp(16px, 3vw, 24px);
   background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
@@ -248,7 +249,7 @@ main > section.ad-wrap { padding-block: 0; }
 .ad-popup       { min-height: 230px; width: 100%; margin-block: 12px; }
 
 .ad-toast {
-  position: fixed; right: 14px; bottom: 14px; z-index: 30; width: min(290px, calc(100vw - 28px));
+  position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 30; width: min(290px, calc(100vw - 28px));
   background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow-lg); padding: 12px;
   animation: toast-in .3s var(--ease);
@@ -375,7 +376,7 @@ details p { margin: 0 0 14px; font-size: .93rem; color: var(--ink-soft); max-wid
   .site-nav a { font-size: .85rem; }
   .hero { padding-block: 16px 10px; }
   .hero-sub { font-size: .92rem; }
-  .result-bar { top: 56px; padding: 12px 14px; }
+  .result-bar { top: calc(56px + env(safe-area-inset-top, 0px)); padding: 12px 14px; }
   .tool-actions { padding-inline: 14px; }
   .tool-actions .btn { flex: 1 1 100%; }
   .tool-actions .btn-reset { flex-basis: auto; }
