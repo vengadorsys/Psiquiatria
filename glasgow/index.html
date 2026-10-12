@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora Escala de Glasgow (GCS) online gratis</title>
+<meta name="description" content="Calcula la Escala de Coma de Glasgow (GCS) de 3 a 15 puntos: apertura ocular, respuesta verbal y motora. Resultado inmediato, interpretación y PDF. Gratis y sin registro." />
+<link rel="canonical" href="https://escala-glasgow.example/" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#0b4ea2" />
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:title" content="Calculadora Escala de Glasgow (GCS) online gratis" />
+<meta property="og:description" content="Escala de Coma de Glasgow de 3 a 15: calcula E + V + M, obtén la interpretación y descarga el resultado en PDF." />
+<meta property="og:url" content="https://escala-glasgow.example/" />
+<meta property="og:image" content="assets/og-glasgow.webp" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<!-- TODO (propietario): si activas AdSense, pega aquí el script de tu CMP de consentimiento de cookies. -->
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="styles.css?v=20261012" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Calculadora Escala de Coma de Glasgow (GCS)",
+  "url": "https://escala-glasgow.example/",
+  "description": "Calculadora interactiva de la Escala de Coma de Glasgow: apertura ocular (1-4), respuesta verbal (1-5) y respuesta motora (1-6), con puntuación total de 3 a 15, interpretación por gravedad y descarga en PDF.",
+  "applicationCategory": "MedicalApplication",
+  "operatingSystem": "Cualquiera (navegador web)",
+  "inLanguage": "es",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Estudiantes de medicina y enfermería, profesionales sanitarios"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Qué es la Escala de Coma de Glasgow?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Es una escala clínica que valora el nivel de consciencia mediante tres componentes: apertura ocular (1-4 puntos), respuesta verbal (1-5 puntos) y respuesta motora (1-6 puntos). La suma va de 3 (ninguna respuesta) a 15 (totalmente alerta y orientado)." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Por qué la puntuación mínima es 3 y no 0?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Porque cada uno de los tres componentes puntúa como mínimo 1 punto, incluso cuando no hay ninguna respuesta. 1 + 1 + 1 = 3, que es el valor más bajo posible de la escala." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo se interpreta la puntuación de la Escala de Glasgow?",
+      "acceptedAnswer": { "@type": "Answer", "text": "De forma orientativa: 13-15 se considera leve, 9-12 moderado y 3-8 grave. Una puntuación igual o menor de 8 se asocia clásicamente a coma y a riesgo de no proteger la vía aérea. Esta clasificación es un apoyo y siempre debe interpretarse en el contexto clínico completo del paciente." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo se anota el resultado si el paciente está intubado o sedado?",
+      "acceptedAnswer": { "@type": "Answer", "text": "El componente afectado se registra como no evaluable (NT) en lugar de asignarle 1 punto. Por ejemplo, en un paciente intubado la respuesta verbal no es valorable y se informa como E4 V-NT M6, sin sumar un total global." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Hay que puntuar la mejor respuesta o la peor?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Siempre se registra la mejor respuesta obtenida en cada componente. En la respuesta motora se valora el mejor lado (el brazo con mejor respuesta), y se exploran las extremidades superiores, no las inferiores." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Sirve la Escala de Glasgow en niños pequeños?",
+      "acceptedAnswer": { "@type": "Answer", "text": "En lactantes y niños que aún no hablan, la versión verbal del adulto no es aplicable. Se utiliza la Escala de Coma de Glasgow pediátrica, que adapta los descriptores verbales y motores a la edad del paciente." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Es gratis y necesito registrarme para usar la calculadora?",
+      "acceptedAnswer": { "@type": "Answer", "text": "La calculadora es gratuita y no requiere registro. Todo el cálculo se realiza en tu propio dispositivo: no se envía ningún dato del paciente a ningún servidor." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué es el GCS-P o puntuación de Glasgow con pupilas?",
+      "acceptedAnswer": { "@type": "Answer", "text": "El GCS-P resta al total de la Escala de Glasgow la puntuación de reactividad pupilar (0, 1 o 2 puntos según cuántas pupilas no reaccionen a la luz), lo que permite afinar el pronóstico en el traumatismo craneoencefálico grave." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#calculadora">Ir a la calculadora</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/" aria-label="Inicio">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="30" height="30" rx="8" fill="currentColor" opacity=".12" />
+        <path d="M16 8v16M8 16h16" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+      </svg>
+      <span><strong>Escala</strong> Glasgow</span>
+    </a>
+    <nav class="site-nav" aria-label="Secciones">
+      <a href="#calculadora">Calculadora</a>
+      <a href="#tabla">Tabla</a>
+      <a href="#como-evaluar">Cómo evaluar</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero wrap">
+    <h1>Calculadora de la Escala de Coma de Glasgow (GCS)</h1>
+    <p class="hero-sub">
+      Valora los tres componentes &mdash; apertura ocular, respuesta verbal y respuesta motora &mdash;
+      y obtén al instante la puntuación total de <strong>3 a 15</strong> con su desglose
+      <strong>E + V + M</strong> y su interpretación.
+    </p>
+  </section>
+
+  <!-- ===================== LA HERRAMIENTA ===================== -->
+  <section id="calculadora" class="wrap">
+    <div class="tool-card" data-tool data-state="idle">
+
+      <!-- Resultado pegajoso: visible mientras se puntúa -->
+      <div class="result-bar" data-result-bar aria-live="polite">
+        <div class="result-score">
+          <span class="result-total" data-total>&ndash;</span>
+          <span class="result-max">/ 15</span>
+        </div>
+        <div class="result-meta">
+          <p class="result-breakdown" data-breakdown>Selecciona los tres componentes</p>
+          <p class="result-band" data-band-label>Sin valoración</p>
+        </div>
+      </div>
+
+      <noscript>
+        <p class="notice notice-warn">
+          Esta calculadora necesita JavaScript para sumar la puntuación automáticamente.
+          Puedes consultar igualmente la <a href="#tabla">tabla completa de la Escala de Glasgow</a>
+          más abajo y sumar los tres componentes a mano.
+        </p>
+      </noscript>
+
+      <form class="gcs-form" data-form novalidate>
+
+        <fieldset class="comp" data-comp="E">
+          <legend>
+            <span class="comp-key">E</span>
+            <span class="comp-name">Apertura ocular</span>
+            <span class="comp-range">1&ndash;4</span>
+          </legend>
+          <div class="opts">
+            <label class="opt">
+              <input type="radio" name="E" value="4" data-label="Espontánea" />
+              <span class="opt-pts">4</span>
+              <span class="opt-text"><strong>Espontánea</strong><em>Abre los ojos sin necesidad de estímulo</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="E" value="3" data-label="A la orden verbal" />
+              <span class="opt-pts">3</span>
+              <span class="opt-text"><strong>A la orden verbal</strong><em>Abre los ojos al hablarle o al llamarle en voz alta</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="E" value="2" data-label="A la presión / al dolor" />
+              <span class="opt-pts">2</span>
+              <span class="opt-text"><strong>A la presión (dolor)</strong><em>Abre los ojos solo con estímulo doloroso</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="E" value="1" data-label="Ninguna" />
+              <span class="opt-pts">1</span>
+              <span class="opt-text"><strong>Ninguna</strong><em>No abre los ojos con ningún estímulo</em></span>
+            </label>
+            <label class="opt opt-nt">
+              <input type="radio" name="E" value="NT" data-label="No evaluable (NT)" />
+              <span class="opt-pts">NT</span>
+              <span class="opt-text"><strong>No evaluable</strong><em>Edema periorbitario, vendaje ocular, traumatismo facial&hellip;</em></span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="comp" data-comp="V">
+          <legend>
+            <span class="comp-key">V</span>
+            <span class="comp-name">Respuesta verbal</span>
+            <span class="comp-range">1&ndash;5</span>
+          </legend>
+          <div class="opts">
+            <label class="opt">
+              <input type="radio" name="V" value="5" data-label="Orientada" />
+              <span class="opt-pts">5</span>
+              <span class="opt-text"><strong>Orientada</strong><em>Dice correctamente quién es, dónde está y en qué fecha</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="V" value="4" data-label="Confusa" />
+              <span class="opt-pts">4</span>
+              <span class="opt-text"><strong>Confusa</strong><em>Conversa, pero desorientado en tiempo, lugar o persona</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="V" value="3" data-label="Palabras inapropiadas" />
+              <span class="opt-pts">3</span>
+              <span class="opt-text"><strong>Palabras inapropiadas</strong><em>Palabras sueltas reconocibles, sin frases con sentido</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="V" value="2" data-label="Sonidos incomprensibles" />
+              <span class="opt-pts">2</span>
+              <span class="opt-text"><strong>Sonidos incomprensibles</strong><em>Gemidos o quejidos, ninguna palabra reconocible</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="V" value="1" data-label="Ninguna" />
+              <span class="opt-pts">1</span>
+              <span class="opt-text"><strong>Ninguna</strong><em>No emite ningún sonido</em></span>
+            </label>
+            <label class="opt opt-nt">
+              <input type="radio" name="V" value="NT" data-label="No evaluable (NT)" />
+              <span class="opt-pts">NT</span>
+              <span class="opt-text"><strong>No evaluable</strong><em>Paciente intubado o traqueostomizado</em></span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="comp" data-comp="M">
+          <legend>
+            <span class="comp-key">M</span>
+            <span class="comp-name">Respuesta motora</span>
+            <span class="comp-range">1&ndash;6</span>
+          </legend>
+          <div class="opts">
+            <label class="opt">
+              <input type="radio" name="M" value="6" data-label="Obedece órdenes" />
+              <span class="opt-pts">6</span>
+              <span class="opt-text"><strong>Obedece órdenes</strong><em>Realiza dos órdenes sencillas distintas al pedírselo</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="M" value="5" data-label="Localiza el dolor" />
+              <span class="opt-pts">5</span>
+              <span class="opt-text"><strong>Localiza el dolor</strong><em>Lleva la mano por encima de la clavícula hacia el estímulo</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="M" value="4" data-label="Retirada al dolor (flexión normal)" />
+              <span class="opt-pts">4</span>
+              <span class="opt-text"><strong>Retirada al dolor</strong><em>Flexión normal: retira rápido el brazo, sin localizar</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="M" value="3" data-label="Flexión anormal (decorticación)" />
+              <span class="opt-pts">3</span>
+              <span class="opt-text"><strong>Flexión anormal</strong><em>Decorticación: flexión lenta y estereotipada del brazo</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="M" value="2" data-label="Extensión (descerebración)" />
+              <span class="opt-pts">2</span>
+              <span class="opt-text"><strong>Extensión</strong><em>Descerebración: extiende y rota internamente el brazo</em></span>
+            </label>
+            <label class="opt">
+              <input type="radio" name="M" value="1" data-label="Ninguna" />
+              <span class="opt-pts">1</span>
+              <span class="opt-text"><strong>Ninguna</strong><em>Ningún movimiento con el estímulo doloroso</em></span>
+            </label>
+            <label class="opt opt-nt">
+              <input type="radio" name="M" value="NT" data-label="No evaluable (NT)" />
+              <span class="opt-pts">NT</span>
+              <span class="opt-text"><strong>No evaluable</strong><em>Bloqueo neuromuscular, sedación profunda, lesión medular&hellip;</em></span>
+            </label>
+          </div>
+        </fieldset>
+      </form>
+
+      <div class="interp" data-interp hidden>
+        <p class="interp-text" data-interp-text></p>
+        <p class="interp-context">
+          La clasificación en leve, moderado y grave es <strong>orientativa</strong> y depende del
+          contexto clínico: mecanismo de la lesión, evolución en el tiempo, sedación, alcohol o
+          drogas, hipotermia, hipoglucemia y focalidad neurológica.
+          Una puntuación <strong>&le; 8</strong> se asocia clásicamente a coma y a riesgo de no
+          proteger la vía aérea.
+        </p>
+      </div>
+
+      <div class="tool-actions">
+        <button type="button" class="btn btn-primary" data-pdf>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-pdf-label>Descargar resultado en PDF</span>
+        </button>
+        <button type="button" class="btn btn-ghost" data-copy>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 5H6a2 2 0 00-2 2v9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span data-copy-label>Copiar resultado</span>
+        </button>
+        <button type="button" class="btn btn-reset" data-reset>Reiniciar</button>
+      </div>
+
+      <p class="privacy-badge">
+        🔒 <strong>100&nbsp;% privado</strong> &mdash; el cálculo se realiza en tu dispositivo y
+        no se envía ningún dato del paciente a ningún servidor. Gratis, sin registro.
+      </p>
+
+      <p class="notice notice-med">
+        <strong>Aviso:</strong> herramienta de <strong>apoyo educativo y clínico</strong>.
+        No sustituye la valoración de un profesional sanitario ni constituye un diagnóstico.
+        Las decisiones clínicas deben basarse en la evaluación completa del paciente.
+      </p>
+    </div>
+  </section>
+
+  <!-- ANUNCIO · banner horizontal bajo la herramienta -->
+  <section class="wrap ad-wrap">
+    <div class="ad-slot ad-leaderboard" data-ad="leaderboard" aria-hidden="true">
+      <span class="ad-label">ANUNCIO</span>
+      <!-- PEGA AQUÍ TU CODIGO DE ADSENSE (banner horizontal 728x90 / responsive) -->
+    </div>
+  </section>
+
+  <!-- ===================== COMO FUNCIONA ===================== -->
+  <section class="wrap steps-section">
+    <h2>Cómo se calcula en 3 pasos</h2>
+    <ol class="steps">
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <h3>1. Estimula de menor a mayor</h3>
+        <p>Observa primero al paciente en reposo, después habla en voz normal, luego en voz alta y
+           solo al final aplica presión. Nunca empieces por el estímulo doloroso.</p>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>2. Puntúa la mejor respuesta</h3>
+        <p>En cada componente se registra la <strong>mejor</strong> respuesta obtenida, no la media
+           ni la peor. En la respuesta motora se valora el mejor brazo.</p>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 19V9m7 10V5m7 14v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <h3>3. Informa el desglose</h3>
+        <p>Comunica siempre <strong>E + V + M</strong>, no solo el total: &laquo;E3 V4 M5 = 12&raquo;
+           dice mucho más que &laquo;Glasgow 12&raquo;.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ===================== TABLA COMPLETA ===================== -->
+  <section id="tabla" class="wrap">
+    <h2>Tabla completa de la Escala de Glasgow</h2>
+    <p class="sec-intro">
+      Los tres componentes y sus descriptores. La suma mínima es 3 (1+1+1) y la máxima 15.
+    </p>
+
+    <div class="table-scroll">
+      <table class="gcs-table">
+        <caption>Escala de Coma de Glasgow: apertura ocular (E), respuesta verbal (V) y respuesta motora (M)</caption>
+        <thead>
+          <tr><th scope="col">Pts</th><th scope="col">Apertura ocular (E)</th><th scope="col">Respuesta verbal (V)</th><th scope="col">Respuesta motora (M)</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">6</th><td class="na">&mdash;</td><td class="na">&mdash;</td><td>Obedece órdenes</td></tr>
+          <tr><th scope="row">5</th><td class="na">&mdash;</td><td>Orientada</td><td>Localiza el dolor</td></tr>
+          <tr><th scope="row">4</th><td>Espontánea</td><td>Confusa</td><td>Retirada al dolor (flexión normal)</td></tr>
+          <tr><th scope="row">3</th><td>A la orden verbal</td><td>Palabras inapropiadas</td><td>Flexión anormal (decorticación)</td></tr>
+          <tr><th scope="row">2</th><td>A la presión (dolor)</td><td>Sonidos incomprensibles</td><td>Extensión (descerebración)</td></tr>
+          <tr><th scope="row">1</th><td>Ninguna</td><td>Ninguna</td><td>Ninguna</td></tr>
+          <tr class="row-nt"><th scope="row">NT</th><td>No evaluable</td><td>No evaluable</td><td>No evaluable</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Interpretación de la puntuación total</h3>
+    <div class="bands">
+      <div class="band band-leve">
+        <span class="band-range">13 &ndash; 15</span>
+        <strong>Leve</strong>
+        <p>Paciente alerta o con alteración leve. En el traumatismo craneoencefálico leve sigue
+           siendo necesaria la vigilancia: un GCS 14 puede empeorar.</p>
+      </div>
+      <div class="band band-moderado">
+        <span class="band-range">9 &ndash; 12</span>
+        <strong>Moderado</strong>
+        <p>Alteración moderada de la consciencia. Requiere monitorización estrecha y reevaluación
+           frecuente, porque el deterioro puede ser rápido.</p>
+      </div>
+      <div class="band band-grave">
+        <span class="band-range">3 &ndash; 8</span>
+        <strong>Grave</strong>
+        <p>Coma. Un GCS &le; 8 implica riesgo alto de no proteger la vía aérea y obliga a valorar
+           el manejo avanzado de la vía aérea y la atención urgente.</p>
+      </div>
+    </div>
+    <p class="note">
+      Los puntos de corte son <strong>convencionales</strong>: distintas guías y escenarios
+      (prehospitalario, urgencias, UCI, pediatría) matizan los límites. Interpreta siempre la
+      puntuación junto al resto de la exploración y a su evolución en el tiempo.
+    </p>
+  </section>
+
+  <!-- ANUNCIO · entre secciones -->
+  <section class="wrap ad-wrap">
+    <div class="ad-slot ad-incontent" data-ad="incontent" aria-hidden="true">
+      <span class="ad-label">ANUNCIO</span>
+      <!-- PEGA AQUÍ TU CODIGO DE ADSENSE (bloque in-content / responsive) -->
+    </div>
+  </section>
+
+  <!-- ===================== COMO EVALUAR ===================== -->
+  <section id="como-evaluar" class="wrap">
+    <h2>Cómo evaluar correctamente al paciente</h2>
+    <p class="sec-intro">
+      La Escala de Glasgow es fiable solo si se aplica igual siempre. El esquema clásico de la
+      escala es <strong>observar &rarr; estimular &rarr; puntuar</strong>.
+    </p>
+
+    <div class="cards">
+      <article class="card">
+        <h3>Observar</h3>
+        <p>Antes de tocar al paciente, mira si abre los ojos de forma espontánea, si habla y si se
+           mueve. Muchos pacientes ya puntuan E4 V5 M6 sin ningún estímulo.</p>
+      </article>
+      <article class="card">
+        <h3>Estimular por escalones</h3>
+        <p>Voz normal &rarr; voz alta &rarr; presión. Si no responde a la voz, aplica presión
+           durante un máximo de 10 segundos y de forma creciente.</p>
+      </article>
+      <article class="card">
+        <h3>Dónde aplicar la presión</h3>
+        <p>Puntos recomendados: <strong>lecho ungueal</strong> (yema del dedo), <strong>trapecio</strong>
+           y <strong>reborde supraorbitario</strong>. Evita el esternón, el pezón y los pinchazos:
+           lesionan y no aportan.</p>
+      </article>
+      <article class="card">
+        <h3>Localizar o retirar</h3>
+        <p>Localiza (M5) si lleva la mano <strong>por encima de la clavícula</strong> hacia el
+           estímulo. Si solo aparta el brazo con rapidez, es retirada (M4).</p>
+      </article>
+      <article class="card">
+        <h3>Obedece órdenes de verdad</h3>
+        <p>Pide <strong>dos órdenes distintas</strong> que no sean reflejas (&laquo;saca la lengua&raquo;,
+           &laquo;levanta dos dedos&raquo;). Apretar la mano puede ser un reflejo de prensión.</p>
+      </article>
+      <article class="card">
+        <h3>Mejor respuesta, mejor lado</h3>
+        <p>Explora ambos brazos y registra el que mejor responde. Las piernas no se usan para
+           puntuar la respuesta motora de la escala.</p>
+      </article>
+    </div>
+
+    <h3>Limitaciones y situaciones no evaluables (NT)</h3>
+    <p>
+      Cuando un componente no se puede valorar, <strong>no se le asigna 1 punto</strong>: se marca
+      como <strong>NT</strong> (del inglés <em>not testable</em>) y el resultado se informa por
+      componentes, sin un total global que induzca a error.
+    </p>
+    <ul class="list-check">
+      <li><strong>Paciente intubado o traqueostomizado</strong> &rarr; V no evaluable (V-NT). Nunca anotes V1 por estar intubado.</li>
+      <li><strong>Sedación, relajación muscular o anestesia</strong> &rarr; la puntuación refleja el fármaco, no la lesión. Registra la escala antes de sedar siempre que sea posible.</li>
+      <li><strong>Edema periorbitario, vendajes o traumatismo facial</strong> &rarr; E no evaluable (E-NT).</li>
+      <li><strong>Afasia, barrera idiomática, sordera, demencia o discapacidad intelectual</strong> &rarr; la respuesta verbal puede infravalorar el nivel real de consciencia.</li>
+      <li><strong>Lesión medular o parálisis</strong> &rarr; la respuesta motora puede no reflejar la función cerebral.</li>
+      <li><strong>Alcohol, drogas, hipoglucemia, hipotermia, crisis epilépticas y postcrítico</strong> &rarr; bajan la puntuación de forma reversible: reevalúa tras corregir la causa.</li>
+      <li><strong>Lactantes y niños pequeños</strong> &rarr; usa la <strong>Escala de Glasgow pediátrica</strong>, con descriptores verbales adaptados a la edad.</li>
+      <li><strong>Un valor aislado dice poco</strong> &rarr; la <strong>tendencia</strong> es lo clinicamente relevante; un descenso de 2 o más puntos es una señal de alarma.</li>
+    </ul>
+
+    <h3>Ejemplos prácticos</h3>
+    <div class="cases">
+      <article class="case">
+        <h4>Caso 1 &middot; Caída con traumatismo craneal leve</h4>
+        <p>Abre los ojos al llamarle (<strong>E3</strong>), conversa pero no sabe en qué día está
+           (<strong>V4</strong>), obedece órdenes sencillas (<strong>M6</strong>).</p>
+        <p class="case-res band-leve">E3 + V4 + M6 = <strong>13</strong> &middot; leve</p>
+      </article>
+      <article class="case">
+        <h4>Caso 2 &middot; Accidente de tráfico</h4>
+        <p>Abre los ojos solo con presión (<strong>E2</strong>), emite quejidos sin palabras
+           (<strong>V2</strong>), lleva la mano hacia el estímulo por encima de la clavícula
+           (<strong>M5</strong>).</p>
+        <p class="case-res band-moderado">E2 + V2 + M5 = <strong>9</strong> &middot; moderado</p>
+      </article>
+      <article class="case">
+        <h4>Caso 3 &middot; Ictus extenso</h4>
+        <p>No abre los ojos (<strong>E1</strong>), no emite ningún sonido (<strong>V1</strong>),
+           extiende el brazo con el estímulo doloroso (<strong>M2</strong>).</p>
+        <p class="case-res band-grave">E1 + V1 + M2 = <strong>4</strong> &middot; grave</p>
+      </article>
+      <article class="case">
+        <h4>Caso 4 &middot; Paciente intubado en UCI</h4>
+        <p>Abre los ojos espontáneamente (<strong>E4</strong>), intubado: respuesta verbal
+           <strong>no evaluable</strong>, obedece órdenes (<strong>M6</strong>).</p>
+        <p class="case-res band-nt">E4 + V-NT + M6 &middot; total no sumable</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== ERRORES COMUNES ===================== -->
+  <section id="errores" class="wrap">
+    <h2>Errores comunes al aplicar la Escala de Glasgow</h2>
+    <ul class="list-x">
+      <li><strong>Anotar V1 en un paciente intubado.</strong> Es un componente no evaluable (V-NT), no una ausencia de respuesta.</li>
+      <li><strong>Dar 0 puntos a un componente.</strong> El mínimo de cada componente es 1; el mínimo total es 3.</li>
+      <li><strong>Informar solo el total.</strong> &laquo;Glasgow 9&raquo; puede ser E2V2M5 o E4V1M4, con significado clínico muy distinto.</li>
+      <li><strong>Empezar por el estímulo doloroso.</strong> Se pierde la respuesta espontánea y se infravalora al paciente.</li>
+      <li><strong>Confundir localizar con retirar.</strong> Localizar (M5) exige cruzar la clavícula hacia el estímulo; retirar (M4) es solo apartarse.</li>
+      <li><strong>Puntuar el peor lado.</strong> Se registra la mejor respuesta del mejor brazo.</li>
+      <li><strong>Usar las piernas para la respuesta motora.</strong> Solo se valoran las extremidades superiores.</li>
+      <li><strong>Olvidar la causa reversible.</strong> Hipoglucemia, opiáceos o hipotermia pueden explicar un GCS bajo: corrige y reevalúa.</li>
+      <li><strong>Puntuar después de sedar</strong> sin indicarlo, o no registrar la hora de la valoración.</li>
+      <li><strong>Aplicar la escala del adulto a un lactante</strong> en lugar de la versión pediátrica.</li>
+    </ul>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section id="faq" class="wrap">
+    <h2>Preguntas frecuentes sobre la Escala de Glasgow</h2>
+
+    <details><summary>&iquest;Qué es la Escala de Coma de Glasgow?</summary>
+      <p>Es una escala clínica que valora el nivel de consciencia mediante tres componentes:
+         apertura ocular (1&ndash;4), respuesta verbal (1&ndash;5) y respuesta motora (1&ndash;6).
+         La suma va de 3 (ninguna respuesta) a 15 (alerta y orientado). Se usa en urgencias,
+         cuidados intensivos, atención prehospitalaria y planta.</p>
+    </details>
+
+    <details><summary>&iquest;Por qué la puntuación mínima es 3 y no 0?</summary>
+      <p>Porque cada componente puntúa como mínimo 1 punto, incluso cuando no hay ninguna
+         respuesta: 1 + 1 + 1 = 3. Un &laquo;Glasgow 0&raquo; o un &laquo;Glasgow 2&raquo; no
+         existen en la escala.</p>
+    </details>
+
+    <details><summary>&iquest;Cómo se interpreta la puntuación de 3 a 15?</summary>
+      <p>De forma orientativa: <strong>13&ndash;15 leve</strong>, <strong>9&ndash;12 moderado</strong>
+         y <strong>3&ndash;8 grave</strong>. Un GCS &le; 8 se asocia clásicamente a coma y a riesgo
+         de no proteger la vía aérea. Estos cortes son convencionales y deben leerse dentro del
+         contexto clínico y de la evolución del paciente.</p>
+    </details>
+
+    <details><summary>&iquest;Cómo se anota si el paciente está intubado o sedado?</summary>
+      <p>El componente afectado se registra como <strong>NT</strong> (no evaluable). En un paciente
+         intubado se informa, por ejemplo, <strong>E4 V-NT M6</strong>, sin dar un total global.
+         Si el paciente está sedado, indícalo junto a la puntuación: la escala refleja también el
+         efecto del fármaco.</p>
+    </details>
+
+    <details><summary>&iquest;Se puntúa la mejor respuesta o la peor?</summary>
+      <p>Siempre la <strong>mejor</strong> respuesta de cada componente, y en la respuesta motora
+         el <strong>mejor brazo</strong>. Las extremidades inferiores no se usan para puntuar.</p>
+    </details>
+
+    <details><summary>&iquest;Sirve la Escala de Glasgow en niños?</summary>
+      <p>En niños que ya hablan con normalidad se puede usar la versión del adulto. En lactantes y
+         preescolares se utiliza la <strong>Escala de Coma de Glasgow pediátrica</strong>, que
+         sustituye los descriptores verbales por otros propios de la edad (balbuceo, llanto
+         consolable, irritabilidad).</p>
+    </details>
+
+    <details><summary>&iquest;Qué es el GCS-P (Glasgow con pupilas)?</summary>
+      <p>El <strong>GCS-P</strong> resta al total de la escala la puntuación de reactividad pupilar
+         (0 si ambas pupilas reaccionan, 1 si no reacciona una, 2 si no reacciona ninguna). El
+         resultado va de 1 a 15 y afina el pronóstico en el traumatismo craneoencefálico grave.</p>
+    </details>
+
+    <details><summary>&iquest;Es gratis? &iquest;Necesito registrarme? &iquest;Se guardan los datos?</summary>
+      <p>Es gratuita y sin registro. El cálculo ocurre por completo en tu navegador: no se envía
+         ni se almacena en ningún servidor ningún dato del paciente. Puedes usarla desde el móvil
+         sin instalar nada.</p>
+    </details>
+  </section>
+
+  <section class="wrap closing">
+    <h2>Escala de Glasgow: para que sirve en la práctica</h2>
+    <p>
+      La Escala de Coma de Glasgow (<em>Glasgow Coma Scale</em>, GCS) fue descrita en 1974 por
+      Teasdale y Jennett en Glasgow para dar un lenguaje común y reproducible al nivel de
+      consciencia. Antes de ella, términos como &laquo;estuporoso&raquo; u &laquo;obnubilado&raquo;
+      significaban cosas distintas para cada profesional. Su valor está en que cualquier miembro
+      del equipo, en cualquier turno, puntúa lo mismo ante el mismo paciente.
+    </p>
+    <p>
+      En la práctica se usa para <strong>clasificar la gravedad</strong> del traumatismo
+      craneoencefálico, <strong>decidir la intensidad de la vigilancia</strong>, ayudar a valorar
+      la necesidad de proteger la vía aérea cuando la puntuación es baja, <strong>detectar
+      deterioro</strong> comparando valoraciones sucesivas y <strong>comunicar</strong> el estado
+      del paciente en los traspasos y en la activación de equipos de emergencia.
+    </p>
+    <p>
+      Su mayor fortaleza es también su límite: es una escala de <strong>respuesta</strong>, no de
+      causa. No dice por qué el paciente está así, no distingue una lesión estructural de una
+      intoxicación y no sustituye la exploración neurológica completa, las pupilas, las constantes,
+      la glucemia ni la imagen. Por eso se registra junto a la hora, al desglose E + V + M y a las
+      circunstancias (sedación, intubación, alcohol), y se repite: en la Escala de Glasgow, la
+      <strong>tendencia</strong> informa más que el número.
+    </p>
+  </section>
+
+</main>
+
+<!-- ANUNCIO · notificación pequeña (esquina, descartable) -->
+<aside class="ad-toast" data-ad-toast hidden aria-label="Espacio publicitario">
+  <button type="button" class="ad-toast-close" data-ad-toast-close aria-label="Cerrar aviso">&times;</button>
+  <div class="ad-slot ad-mini">
+    <span class="ad-label">ANUNCIO</span>
+    <!-- PEGA AQUÍ TU CODIGO DE ADSENSE (formato pequeño 300x100) -->
+  </div>
+</aside>
+
+<!-- ANUNCIO · pop-up al descargar el PDF (se abre DESPUES de iniciar la descarga) -->
+<dialog class="ad-dialog" data-ad-dialog aria-labelledby="ad-dialog-title">
+  <form method="dialog" class="ad-dialog-x">
+    <button value="close" aria-label="Cerrar">&times;</button>
+  </form>
+  <p class="ad-dialog-ok" id="ad-dialog-title">✅ Tu PDF se está descargando</p>
+  <div class="ad-slot ad-popup">
+    <span class="ad-label">ANUNCIO</span>
+    <!-- PEGA AQUÍ TU CODIGO DE ADSENSE (bloque cuadrado 300x250) -->
+  </div>
+  <form method="dialog">
+    <button class="btn btn-primary btn-block" value="close">Cerrar y seguir</button>
+  </form>
+</dialog>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-disclaimer">
+      <strong>Escala Glasgow</strong> es una herramienta de apoyo educativo y clínico dirigida a
+      estudiantes de medicina y enfermería y a profesionales sanitarios. <strong>No sustituye la
+      valoración de un profesional</strong>, no emite diagnósticos y no debe usarse como único
+      criterio para tomar decisiones clínicas. Ante una urgencia, contacta con los servicios de
+      emergencia.
+    </p>
+    <nav class="footer-links" aria-label="Legal">
+      <a href="privacidad.html">Privacidad</a>
+      <a href="aviso-legal.html">Aviso legal</a>
+      <a href="#calculadora">Calculadora</a>
+    </nav>
+    <p class="footer-copy">Cálculo 100&nbsp;% en tu dispositivo &middot; Gratis &middot; Sin registro</p>
+  </div>
+</footer>
+
+<script defer src="lib/manifest.js?v=20261012"></script>
+<script defer src="main.js?v=20261012"></script>
+</body>
+</html>
