@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://escala-glasgow.example/sitemap.xml
+Sitemap: https://glasgow.com.mx/sitemap.xml

@@ -4,7 +4,7 @@
   window.__BRAND__ = {
     name: "Escala Glasgow",
     tagline: "Calculadora de la Escala de Coma de Glasgow",
-    url: "https://escala-glasgow.example",
+    url: "https://glasgow.com.mx",
 
     // Bandas de gravedad. La clasificación es orientativa y depende del
     // contexto clínico (ver aviso en la pagina).
