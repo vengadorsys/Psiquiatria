@@ -12,7 +12,7 @@
     { id: "leve", min: 13, max: 15, label: "Leve", hint: "" }
   ];
   var LEGAL = BRAND.legal || {};
-  var PDF_SRC = "lib/vendor/jspdf.umd.min.js";
+  var PDF_SRC = "lib/pdf/jspdf.umd.min.js";
 
   var COMPS = [
     { key: "E", name: "Apertura ocular" },
